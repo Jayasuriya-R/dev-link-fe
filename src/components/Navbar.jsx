@@ -2,9 +2,12 @@ import React from "react";
 
 const Navbar = ({ setshowSideBar, showSideBar }) => {
   return (
-    <div className="navbar bg-base-100 shadow-sm">
+    <div className="navbar bg-base-200 shadow-sm">
       <div className="flex-none">
-        <button className="btn btn-square btn-ghost" onClick={()=>setshowSideBar(!showSideBar)}>
+        <button className="btn btn-square btn-ghost" onClick={() => {
+    const drawerCheckbox = document.getElementById("my-drawer-1");
+    if (drawerCheckbox) drawerCheckbox.checked = !drawerCheckbox.checked;
+  }}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -33,13 +36,13 @@ const Navbar = ({ setshowSideBar, showSideBar }) => {
           <div className="w-10 rounded-full">
             <img
               alt="Tailwind CSS Navbar component"
-              src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtNOrllJdVu85SAsDUmuiEdivyIzrhQVuZaw&s"
             />
           </div>
         </div>
         <ul
           tabIndex="-1"
-          className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+          className="menu menu-sm dropdown-content bg-primary rounded-box z-1 mt-3 w-52 p-2 shadow"
         >
           <li>
             <a className="justify-between">

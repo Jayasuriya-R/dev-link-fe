@@ -1,18 +1,23 @@
-import React from 'react'
-import { useState } from 'react';
-import Navbar from './Navbar';
-import Sidebar from './Sidebar';
-import { Outlet } from 'react-router-dom';
+import Navbar from "./Navbar";
+
+import { Outlet } from "react-router-dom";
+import Sidebar from "./Sidebar";
+import Footer from "./Footer";
 
 const Maincontainer = () => {
-    const [showSideBar, setshowSideBar] = useState(false);
   return (
     <div>
-        <Navbar setshowSideBar={setshowSideBar} showSideBar={showSideBar} />
-        {showSideBar && <Sidebar />}
-        <Outlet/>
+      <div className="bg-base-100">
+        <Navbar />
       </div>
-  )
-}
 
-export default Maincontainer
+      <Sidebar />
+      <div className="bg-base-300 min-h-full">
+        <Outlet />
+      </div>
+      <Footer/>
+    </div>
+  );
+};
+
+export default Maincontainer;
