@@ -4,6 +4,7 @@ import Maincontainer from "./components/Maincontainer";
 import Login from "./components/Login";
 import { useSelector } from "react-redux";
 import SingUp from "./components/SingUp";
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   
@@ -19,6 +20,7 @@ const loggedIn = useSelector((state) => state.auth.isLoggedIn);
     
     </Routes>
     </BrowserRouter>
+     <Toaster position="bottom-right" />
     </>
   );
 }

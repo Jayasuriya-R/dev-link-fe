@@ -1,9 +1,33 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { signUpUser } from "../Store/authSlice";
+import axios from "axios";
+import { toast } from "react-hot-toast";
 
 const Login = () => {
+  const [emailId, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
   const dispatch = useDispatch();
+
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/login",
+        {
+          emailId,
+          password,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      console.log("Login successful:", response.data);
+      toast.success("Login successful!");
+    } catch (err) {
+      console.log("Login error:", err);
+      toast.error("Login failed. Please check your credentials.");
+    }
+  };
   return (
     <>
       <div className="hero bg-base-200 flex flex-col justify-center w-full min-h-[100vh] ">
@@ -32,7 +56,13 @@ const Login = () => {
                       <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
                     </g>
                   </svg>
-                  <input type="email" placeholder="mail@site.com" required />
+                  <input
+                    type="email"
+                    value={emailId}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="mail@site.com"
+                    required
+                  />
                 </label>
                 <div className="validator-hint hidden">
                   Enter valid email address
@@ -63,6 +93,8 @@ const Login = () => {
                   <input
                     type="password"
                     required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     placeholder="Password"
                     minlength="8"
                     pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
@@ -79,7 +111,9 @@ const Login = () => {
                 <div>
                   <a className="link link-hover">Forgot password?</a>
                 </div>
-                <button className="btn btn-primary mt-4">Login</button>
+                <button className="btn btn-primary mt-4" onClick={handleLogin}>
+                  Login
+                </button>
                 <p
                   className="text-center font-bold link link-hover mt-2 cursor-pointer"
                   onClick={() => dispatch(signUpUser())}
