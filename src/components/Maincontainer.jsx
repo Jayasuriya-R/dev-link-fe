@@ -6,16 +6,19 @@ import Footer from "./Footer";
 
 const Maincontainer = () => {
   return (
-    <div>
+    <div className="flex flex-col justify-between min-h-screen">
       <div className="bg-base-100">
         <Navbar />
       </div>
-
-      <Sidebar />
-      <div className="bg-base-300 min-h-full">
-        <Outlet />
+      <div >
+        <Sidebar />
+        <main className="flex justify-center items-center">
+          <Outlet />
+        </main>
       </div>
-      <Footer/>
+      <div>
+        <Footer />
+      </div>
     </div>
   );
 };

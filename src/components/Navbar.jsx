@@ -1,13 +1,19 @@
 import React from "react";
+import { useSelector } from "react-redux";
 
-const Navbar = ({ setshowSideBar, showSideBar }) => {
+const Navbar = () => {
+  const currentUser = useSelector((state) => state.auth.currentUser);
   return (
     <div className="navbar bg-base-200 shadow-sm">
       <div className="flex-none">
-        <button className="btn btn-square btn-ghost" onClick={() => {
-    const drawerCheckbox = document.getElementById("my-drawer-1");
-    if (drawerCheckbox) drawerCheckbox.checked = !drawerCheckbox.checked;
-  }}>
+        <button
+          className="btn btn-square btn-ghost"
+          onClick={() => {
+            const drawerCheckbox = document.getElementById("my-drawer-1");
+            if (drawerCheckbox)
+              drawerCheckbox.checked = !drawerCheckbox.checked;
+          }}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -36,7 +42,7 @@ const Navbar = ({ setshowSideBar, showSideBar }) => {
           <div className="w-10 rounded-full">
             <img
               alt="Tailwind CSS Navbar component"
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtNOrllJdVu85SAsDUmuiEdivyIzrhQVuZaw&s"
+              src={currentUser?.photoUrl}
             />
           </div>
         </div>

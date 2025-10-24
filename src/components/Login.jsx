@@ -1,13 +1,16 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { signUpUser } from "../Store/authSlice";
+import { addCurrentUser, signUpUser } from "../Store/authSlice";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+
 
 const Login = () => {
   const [emailId, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   const handleLogin = async () => {
     try {
@@ -23,6 +26,8 @@ const Login = () => {
       );
       console.log("Login successful:", response.data);
       toast.success("Login successful!");
+      dispatch(addCurrentUser(response.data.data));
+      navigate('/home/feed')
     } catch (err) {
       console.log("Login error:", err);
       toast.error("Login failed. Please check your credentials.");
@@ -31,11 +36,11 @@ const Login = () => {
   return (
     <>
       <div className="hero bg-base-200 flex flex-col justify-center w-full min-h-[100vh] ">
-        <h1 className="text-4xl text-white font-mono font-bold">
+        <h1 className="text-4xl  text-center text-white font-mono font-bold">
           Welcome to DevLink⚡
         </h1>
         <div className="hero-content flex-col w-full lg:flex-row-reverse">
-          <div className="card bg-base-100 w-3/12 max-w-xl shrink-0 shadow-2xl">
+          <div className="card bg-base-100 md:w-3/12  max-w-xl shrink-0 shadow-2xl">
             <div className="card-body">
               <fieldset className="fieldset">
                 <label className="label">Email</label>
