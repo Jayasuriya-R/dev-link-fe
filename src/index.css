@@ -19,7 +19,7 @@
   --color-base-content: oklch(95% 0.008 270);
   
   /* Primary (vibrant purple) */
-  --color-primary: oklch(60% 0.26 285); /* Rich, glowing purple */
+  --color-primary: oklch(55% 0.26 285); /* Rich, glowing purple */
   --color-primary-content: oklch(100% 0 0);
   
   /* Secondary (soft lavender) */

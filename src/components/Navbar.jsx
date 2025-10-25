@@ -1,8 +1,23 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import axois from "axios";
+import { Base_URL } from "../utils/constants";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const currentUser = useSelector((state) => state.auth.currentUser);
+  const navigate = useNavigate();
+  const handleLogout = async () =>{
+    try{
+     const response =  await axois.post(Base_URL + "/logout")
+    console.log("Logout successful:", response.data);
+    navigate('/')
+    }catch(err){
+      console.log("Logout error:", err);
+    }
+    
+  }
+
   return (
     <div className="navbar bg-base-200 shadow-sm">
       <div className="flex-none">
@@ -33,7 +48,12 @@ const Navbar = () => {
       <div className="flex-1">
         <a className="btn btn-ghost text-xl">DevLink</a>
       </div>
+      <div className="flex items-center gap-4">
+      <div className="font-bold">
+          Welcome {currentUser?.firstName}
+        </div>
       <div className="dropdown dropdown-end mr-2">
+        
         <div
           tabIndex={0}
           role="button"
@@ -48,7 +68,7 @@ const Navbar = () => {
         </div>
         <ul
           tabIndex="-1"
-          className="menu menu-sm dropdown-content bg-primary rounded-box z-1 mt-3 w-52 p-2 shadow"
+          className="menu menu-sm dropdown-content bg-primary font-bold rounded-box z-1 mt-3 w-52 p-2 shadow"
         >
           <li>
             <a className="justify-between">
@@ -59,10 +79,11 @@ const Navbar = () => {
           <li>
             <a>Settings</a>
           </li>
-          <li>
+          <li onClick={handleLogout}>
             <a>Logout</a>
           </li>
         </ul>
+      </div>
       </div>
     </div>
   );

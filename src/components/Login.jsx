@@ -4,6 +4,7 @@ import { addCurrentUser, signUpUser } from "../Store/authSlice";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { Base_URL } from "../utils/constants";
 
 
 const Login = () => {
@@ -15,7 +16,7 @@ const Login = () => {
   const handleLogin = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/login",
+        Base_URL + "/login",
         {
           emailId,
           password,

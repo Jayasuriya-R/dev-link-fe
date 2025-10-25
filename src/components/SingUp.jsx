@@ -4,6 +4,7 @@ import { addProfilePreview, loginUser } from "../Store/authSlice";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { Base_URL } from "../utils/constants";
 
 const SingUp = () => {
   const dispatch = useDispatch();
@@ -82,7 +83,7 @@ const handleSignUp = async () => {
     }
 
     const response = await axios.post(
-      "http://localhost:3000/signup",
+      Base_URL + "/signup",
       formData, // ✅ Send FormData, not regular object
       {
         withCredentials: true,
