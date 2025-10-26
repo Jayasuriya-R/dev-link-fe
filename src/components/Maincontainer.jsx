@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Base_URL } from "../utils/constants";
 import Body from "./Body";
-import Login from "./Login";
 import AuthContainer from "./AuthContainer";
 
 const Maincontainer = () => {
@@ -13,6 +12,7 @@ const Maincontainer = () => {
   const navigate = useNavigate();
   const currentUser = useSelector((state) => state.auth.currentUser);
   const isLoading = useSelector((state) => state.auth.isLoading);
+
 
   useEffect(() => {
     fetchCurrentUser();

@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axois from "axios";
 import { Base_URL } from "../utils/constants";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { addCurrentUser } from "../Store/authSlice";
 
 const Navbar = () => {
@@ -49,7 +49,7 @@ const Navbar = () => {
         </button>
       </div>
       <div className="flex-1">
-        <a className="btn btn-ghost text-xl">DevLink</a>
+        <Link to='/feed' className="btn btn-ghost text-xl">DevLink</Link>
       </div>
       <div className="flex items-center gap-4">
       <div className="font-bold ">
@@ -74,10 +74,10 @@ const Navbar = () => {
           className="menu menu-sm dropdown-content bg-primary font-bold rounded-box z-1 mt-3 w-52 p-2 shadow"
         >
           <li>
-            <a className="justify-between">
+            <Link to='/profile' className="justify-between">
               Profile
               <span className="badge">New</span>
-            </a>
+            </Link>
           </li>
           <li>
             <a>Settings</a>
