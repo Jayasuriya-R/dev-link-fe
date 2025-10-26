@@ -5,7 +5,7 @@ const authSlice = createSlice({
     initialState: {
         isLoggedIn: true,
         currentUser: null,
-        profilePreview: null
+        isLoading: false
     },
     reducers: {
         signUpUser:(state)=>{
@@ -18,11 +18,11 @@ const authSlice = createSlice({
         addCurrentUser:(state,action)=>{
             state.currentUser=action.payload;
         },
-        addProfilePreview:(state,action)=>{
+        setLoading:(state,action)=>{
             state.profilePreview=action.payload;
         }     
     }
 })
 
-export const {signUpUser,loginUser,addCurrentUser,addProfilePreview} = authSlice.actions;
+export const {signUpUser,loginUser,addCurrentUser,setLoading} = authSlice.actions;
 export default authSlice.reducer;

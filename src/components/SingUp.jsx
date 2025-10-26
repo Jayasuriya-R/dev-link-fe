@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addProfilePreview, loginUser } from "../Store/authSlice";
+import { loginUser } from "../Store/authSlice";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -95,7 +95,7 @@ const handleSignUp = async () => {
     
     console.log("SignUp successful:", response.data);
     toast.success("SignUp successful!");
-    navigate("/home/feed");
+    navigate("/feed");
     
   } catch (err) {
     console.log("SignUp error:", err);

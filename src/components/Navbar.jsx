@@ -1,17 +1,20 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axois from "axios";
 import { Base_URL } from "../utils/constants";
 import { useNavigate } from "react-router-dom";
+import { addCurrentUser } from "../Store/authSlice";
 
 const Navbar = () => {
   const currentUser = useSelector((state) => state.auth.currentUser);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const handleLogout = async () =>{
     try{
      const response =  await axois.post(Base_URL + "/logout")
     console.log("Logout successful:", response.data);
-    navigate('/')
+    dispatch(addCurrentUser(null));
+    navigate('/login')
     }catch(err){
       console.log("Logout error:", err);
     }
@@ -49,8 +52,8 @@ const Navbar = () => {
         <a className="btn btn-ghost text-xl">DevLink</a>
       </div>
       <div className="flex items-center gap-4">
-      <div className="font-bold">
-          Welcome {currentUser?.firstName}
+      <div className="font-bold ">
+          Welcome {currentUser?.firstName} 🙋‍♂️
         </div>
       <div className="dropdown dropdown-end mr-2">
         

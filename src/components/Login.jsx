@@ -1,20 +1,21 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { addCurrentUser, signUpUser } from "../Store/authSlice";
+import { addCurrentUser, setLoading, signUpUser } from "../Store/authSlice";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { Base_URL } from "../utils/constants";
 
-
 const Login = () => {
   const [emailId, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
+    dispatch(setLoading(true));
     try {
+      
       const response = await axios.post(
         Base_URL + "/login",
         {
@@ -28,10 +29,13 @@ const Login = () => {
       console.log("Login successful:", response.data);
       toast.success("Login successful!");
       dispatch(addCurrentUser(response.data.data));
-      navigate('/home/feed')
+
+      navigate("/feed");
     } catch (err) {
       console.log("Login error:", err);
       toast.error("Login failed. Please check your credentials.");
+    } finally {
+      dispatch(setLoading(false));
     }
   };
   return (

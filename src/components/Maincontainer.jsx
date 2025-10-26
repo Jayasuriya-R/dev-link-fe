@@ -1,22 +1,22 @@
-import Navbar from "./Navbar";
-
-import { Outlet } from "react-router-dom";
-import Sidebar from "./Sidebar";
-import Footer from "./Footer";
 import { useEffect } from "react";
 import { addCurrentUser } from "../Store/authSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Base_URL } from "../utils/constants";
+import Body from "./Body";
+import Login from "./Login";
+import AuthContainer from "./AuthContainer";
 
 const Maincontainer = () => {
   const disptach = useDispatch();
   const navigate = useNavigate();
+  const currentUser = useSelector((state) => state.auth.currentUser);
+  const isLoading = useSelector((state) => state.auth.isLoading);
+
   useEffect(() => {
     fetchCurrentUser();
-  },[]);
-
+  }, []);
   const fetchCurrentUser = async () => {
     try {
       const response = await axios.get(Base_URL + "/profile/view", {
@@ -31,21 +31,17 @@ const Maincontainer = () => {
   };
 
   return (
-    <div className="flex flex-col justify-between min-h-screen">
-      <div className="bg-base-100">
-        <Navbar />
-      </div>
-      <div>
-        <Sidebar />
-        <main className="flex justify-center items-center">
-          <Outlet />
-        </main>
-      </div>
-      <div>
-        <Footer />
+   <>
+  {isLoading && (
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="bg-base-100 rounded-lg p-8 flex flex-col items-center shadow-xl">
+        <span className="loading loading-spinner loading-lg text-primary"></span>
       </div>
     </div>
-  );
+  )}
+  {currentUser ? <Body /> : <AuthContainer/>}
+</>
+  )
 };
 
 export default Maincontainer;

@@ -5,15 +5,16 @@ import { useSelector } from "react-redux";
 import SingUp from "./components/SingUp";
 import { Toaster } from "react-hot-toast";
 import UserCard from "./components/UserCard";
+import AuthContainer from "./components/AuthContainer";
 
 function App() {
-  const loggedIn = useSelector((state) => state.auth.isLoggedIn);
+ 
   return (
     <>
       <BrowserRouter basename="/">
         <Routes>
           <Route path="/" element={<Maincontainer />}>
-            <Route path="/login" element={loggedIn ? <Login /> : <SingUp />} />
+            <Route path="/login" element={<AuthContainer/>} />
             <Route path="/feed" element={<UserCard />} />
           </Route>
         </Routes>
