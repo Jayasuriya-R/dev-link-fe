@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Sidebar = () => {
   return (
@@ -14,10 +15,10 @@ const Sidebar = () => {
         <ul className="menu bg-base-300 min-h-full w-50 p-4">
           {/* Sidebar content here */}
           <li>
-            <a>Home</a>
+            <Link to="/feed">Home</Link>
           </li>
           <li>
-            <a>Settings</a>
+            <Link>Settings</Link>
           </li>
         </ul>
         

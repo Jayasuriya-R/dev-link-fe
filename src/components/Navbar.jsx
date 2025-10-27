@@ -4,6 +4,7 @@ import axois from "axios";
 import { Base_URL } from "../utils/constants";
 import { Link, useNavigate } from "react-router-dom";
 import { addCurrentUser } from "../Store/authSlice";
+import { removeFeed } from "../Store/feedSlice";
 
 const Navbar = () => {
   const currentUser = useSelector((state) => state.auth.currentUser);
@@ -11,9 +12,10 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const handleLogout = async () =>{
     try{
-     const response =  await axois.post(Base_URL + "/logout")
+     const response =  await axois.post(Base_URL + "/logout",{},{withCredentials:true});
     console.log("Logout successful:", response.data);
     dispatch(addCurrentUser(null));
+    dispatch(removeFeed([]))
     navigate('/login')
     }catch(err){
       console.log("Logout error:", err);
@@ -73,16 +75,16 @@ const Navbar = () => {
           tabIndex="-1"
           className="menu menu-sm dropdown-content bg-primary font-bold rounded-box z-1 mt-3 w-52 p-2 shadow"
         >
-          <li>
+          <li className="hover:bg-base-300 rounded-xl ">
             <Link to='/profile' className="justify-between">
               Profile
-              <span className="badge">New</span>
+              
             </Link>
           </li>
-          <li>
+          <li className="hover:bg-base-300 rounded-xl">
             <a>Settings</a>
           </li>
-          <li onClick={handleLogout}>
+          <li onClick={handleLogout} className="hover:bg-base-300 rounded-xl">
             <a>Logout</a>
           </li>
         </ul>

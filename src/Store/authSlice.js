@@ -19,7 +19,7 @@ const authSlice = createSlice({
             state.currentUser=action.payload;
         },
         setLoading:(state,action)=>{
-            state.profilePreview=action.payload;
+            state.isLoading=action.payload;
         }     
     }
 })

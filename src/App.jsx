@@ -7,6 +7,7 @@ import { Toaster } from "react-hot-toast";
 import UserCard from "./components/UserCard";
 import AuthContainer from "./components/AuthContainer";
 import Profile from "./components/Profile";
+import FeedContainer from "./components/FeedContainer";
 
 function App() {
   return (
@@ -15,7 +16,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Maincontainer />}>
             <Route path="login" element={<AuthContainer />} />
-            <Route path="feed" element={<UserCard />} />
+            <Route path="feed" element={<FeedContainer/>} />
             <Route path="profile" element={<Profile />} />
           </Route>
         </Routes>

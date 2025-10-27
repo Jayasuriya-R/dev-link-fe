@@ -6,7 +6,7 @@ import { Outlet } from 'react-router-dom'
 
 const Body = () => {
   return (
-    <div className="flex flex-col justify-between min-h-screen">
+    <div className="flex flex-col justify-between min-h-screen space-y-2">
       <div className="bg-base-100">
         <Navbar />
       </div>
