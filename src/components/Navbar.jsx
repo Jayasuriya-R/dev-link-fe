@@ -54,7 +54,7 @@ const Navbar = () => {
         <Link to='/feed' className="btn btn-ghost text-xl">DevLink</Link>
       </div>
       <div className="flex items-center gap-4">
-      <div className="font-bold ">
+      <div className="md:text-xl sm:text-lg font-semibold">
           Welcome {currentUser?.firstName} 🙋‍♂️
         </div>
       <div className="dropdown dropdown-end mr-2">
@@ -85,7 +85,7 @@ const Navbar = () => {
             <a>Settings</a>
           </li>
           <li onClick={handleLogout} className="hover:bg-base-300 rounded-xl">
-            <a>Logout</a>
+            <Link>Logout</Link>
           </li>
         </ul>
       </div>
