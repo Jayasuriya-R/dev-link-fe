@@ -81,9 +81,7 @@ const Navbar = () => {
               
             </Link>
           </li>
-          <li className="hover:bg-base-300 rounded-xl">
-            <a>Settings</a>
-          </li>
+          
           <li onClick={handleLogout} className="hover:bg-base-300 rounded-xl">
             <Link>Logout</Link>
           </li>

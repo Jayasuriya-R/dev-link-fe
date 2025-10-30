@@ -20,7 +20,7 @@ const UserCard = ({ feedData, setMoveFeed, moveFeed }) => {
   };
 
   return (
-    <div className="card bg-base-300 w-80 shadow-md rounded-3xl border py-2 border-base-200 transition-all duration-300 hover:shadow-lg">
+    <div className="card bg-base-300 w-80 shadow-md rounded-3xl border  border-base-200 transition-all duration-300 hover:shadow-lg">
       {/* Profile Image */}
       <figure className="relative">
         <img
