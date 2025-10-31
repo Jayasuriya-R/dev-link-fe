@@ -48,7 +48,7 @@ const FeedContainer = () => {
             <UserCard
               feedData={feedData[moveFeed]} 
               setMoveFeed={setMoveFeed}
-              moveFeed={moveFeed}
+              
             />
           </motion.div>
         ) : (

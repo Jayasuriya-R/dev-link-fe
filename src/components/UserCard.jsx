@@ -1,106 +1,153 @@
 import React from "react";
+import { Base_URL } from "../utils/constants";
+import axios from "axios";
 
-const UserCard = ({ feedData, setMoveFeed, moveFeed }) => {
+const UserCard = ({ feedData, setMoveFeed }) => {
   const [popupMessage, setPopupMessage] = React.useState(null);
-  const handleLike = () => {
-    setPopupMessage("💜 You liked this profile!");
-    setTimeout(() => {
-      setPopupMessage(null);
-      setMoveFeed((prev) => prev + 1);
-    }, 1000);
+
+  const handleLike = async (status) => {
+    try {
+      const response = await axios.post(
+        Base_URL + "/request/send/" + status + "/" + feedData._id,
+        {},
+        { withCredentials: true }
+      );
+      console.log("Profile liked:", response.data);
+      setPopupMessage("💜 You liked this profile!");
+      setTimeout(() => {
+        setPopupMessage(null);
+        setMoveFeed((prev) => prev + 1);
+      }, 1000);
+    } catch (err) {
+      console.error("Error liking profile:", err);
+    }
   };
 
-  const handleReject = () => {
+  const handleReject =async (status) => {
+    try {
+      const response = await axios.post(
+        Base_URL + "/request/send/" + status + "/" + feedData._id,
+        {},
+        { withCredentials: true }
+      );
+      console.log("Profile liked:", response.data);
     setPopupMessage("❌ You rejected this profile!");
-    setTimeout(() => {
-      setPopupMessage(null);
-
-      setMoveFeed((prev) => prev + 1);
-    }, 1000);
+   setTimeout(() => {
+        setPopupMessage(null);
+        setMoveFeed((prev) => prev + 1);
+      }, 1000);
+    } catch (err) {
+      console.error("Error liking profile:", err);
+    }
   };
 
   return (
-    <div className="card bg-base-300 w-80 shadow-md rounded-3xl border  border-base-200 transition-all duration-300 hover:shadow-lg">
-      {/* Profile Image */}
-      <figure className="relative">
-        <img
-          src={
-            feedData?.photoUrl ||
-            "https://via.placeholder.com/400x250?text=No+Avatar"
-          }
-          alt="Profile"
-          className="object-cover w-full h-56 rounded-t-3xl hover:scale-105 transition-transform duration-300"
-        />
-        <div className="absolute flex justify-between items-center bottom-0 w-full bg-gradient-to-t from-base-300/90 to-transparent px-4 py-2 text-left">
-          <div>
-            <h2 className="text-xl font-bold text-white">
-              {feedData?.firstName + " " + feedData?.lastName || "User Name"}
-            </h2>
-            <p className="text-sm opacity-80">
-              {feedData?.age ? `${feedData.age} years old` : ""}
+    <div className="w-full max-w-sm mx-auto px-3">
+      <div className="card bg-base-200 shadow-md rounded-2xl overflow-hidden border border-base-300 hover:shadow-xl transition-all duration-300 min-h-[420px]">
+        {/* Profile Image */}
+        <figure className="relative h-44 sm:h-52">
+          <img
+            src={
+              feedData?.photoUrl ||
+              "https://via.placeholder.com/400x250?text=No+Avatar"
+            }
+            alt={`${feedData?.firstName || "User"}'s profile`}
+            className="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+
+          {/* Name and Status */}
+          <div className="absolute bottom-2 left-3 right-3 flex justify-between items-end">
+            <div className="truncate">
+              <h2 className="text-base sm:text-lg font-bold text-white leading-tight truncate">
+                {feedData?.firstName && feedData?.lastName
+                  ? `${feedData.firstName} ${feedData.lastName}`
+                  : "User Name"}
+              </h2>
+              {feedData?.age && (
+                <p className="text-[11px] text-white/80">{feedData.age} yrs</p>
+              )}
+            </div>
+            <span className="badge badge-success badge-xs sm:badge-sm text-white px-2 py-0.5 rounded-full">
+              Active
+            </span>
+          </div>
+        </figure>
+
+        {/* Body */}
+        <div className="card-body p-3 sm:p-4 space-y-3">
+          {/* Description */}
+          <div className="h-[70px] overflow-y-auto scrollbar-thin scrollbar-thumb-primary/30 scrollbar-track-transparent rounded-lg bg-base-100/40 p-2">
+            <p className="text-xs sm:text-sm text-base-content/80 leading-relaxed">
+              {feedData?.shortDescription || "No description available."}
             </p>
           </div>
-          <div className="badge badge-outline border-primary text-primary bg-base-100/40 px-3 py-2  font-medium rounded-full ">
-            Active
+
+          {/* Skills */}
+          <div>
+            <h3 className="font-semibold text-[11px] sm:text-xs text-primary text-center mb-1">
+              Skills
+            </h3>
+            <div className="h-[60px] overflow-y-auto scrollbar-thin scrollbar-thumb-primary/30 scrollbar-track-transparent rounded-lg bg-base-100/40 p-2 flex flex-wrap justify-center gap-1.5">
+              {feedData?.skills?.length > 0 ? (
+                feedData.skills.map((skill, i) => (
+                  <span
+                    key={`${skill}-${i}`}
+                    className="badge badge-outline badge-xs border-primary text-primary hover:bg-primary hover:text-white transition-all duration-200"
+                  >
+                    {skill}
+                  </span>
+                ))
+              ) : (
+                <span className="opacity-60 text-[11px]">No skills</span>
+              )}
+            </div>
+          </div>
+
+          {/* Buttons */}
+          <div className="flex gap-2 pt-1">
+            <button
+              onClick={()=>handleLike("interested")}
+              className="btn btn-xs sm:btn-sm flex-1 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white rounded-lg font-medium"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
+                className="w-4 h-4 mr-1"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M21 8.5c0 2.28-1.51 4.04-3 5.5l-6 6-6-6C4.51 12.54 3 10.78 3 8.5A5.5 5.5 0 0 1 8.5 3c1.76 0 3 .5 4.5 2 1.5-1.5 2.74-2 4.5-2A5.5 5.5 0 0 1 21 8.5Z"
+                />
+              </svg>
+              Like
+            </button>
+            <button
+              onClick={()=>handleReject("uninterested")}
+              className="btn btn-xs sm:btn-sm flex-1 border-pink-500 text-pink-500 hover:bg-pink-500 hover:text-white  rounded-lg font-medium"
+            >
+              ✕ Reject
+            </button>
           </div>
         </div>
-      </figure>
 
-      {/* Body */}
-      <div className="card-body items-center text-center space-y-3 p-4">
-        {/* Description */}
-        <div className="max-h-20 overflow-y-auto scrollbar-thin scrollbar-thumb-primary/40 scrollbar-track-base-200 rounded-lg p-2 bg-base-200/40 w-full">
-          <p className="text-sm leading-relaxed opacity-90">
-            {feedData?.shortDescription || "No description available."}
-          </p>
-        </div>
-
-        {/* Skills */}
-        <div className="p-3 bg-base-200/50 rounded-2xl w-full">
-          <h3 className="font-semibold mb-2 text-primary text-sm">Skills</h3>
-          <div className="flex flex-wrap justify-center gap-2">
-            {feedData?.skills?.length > 0 ? (
-              feedData.skills.map((skill) => (
-                <div
-                  key={skill}
-                  className="badge badge-outline border-secondary text-secondary bg-base-100/40 px-3 py-2 text-xs font-medium rounded-full hover:bg-secondary hover:text-white transition-all duration-200"
-                >
-                  {skill}
-                </div>
-              ))
-            ) : (
-              <span className="opacity-60 text-xs">No skills added</span>
-            )}
+        {/* Toast */}
+        {popupMessage && (
+          <div className="toast toast-center toast-top z-50">
+            <div
+              className={`alert ${
+                popupMessage.includes("liked") ? "alert-success" : "alert-error"
+              } text-xs shadow-lg px-4 py-2 rounded-lg`}
+            >
+              <span>{popupMessage}</span>
+            </div>
           </div>
-        </div>
-
-        {/* Buttons */}
-        <div className="flex justify-between w-full mt-2">
-          <button
-            className="btn btn-primary btn-outline  w-1/2 mr-1"
-            onClick={handleLike}
-          >
-            ❤️ Like
-          </button>
-          <button
-            className="btn btn-primary btn-outline w-1/2 ml-1"
-            onClick={handleReject}
-          >
-            ❌ Reject
-          </button>
-        </div>
+        )}
       </div>
-      {popupMessage && (
-        <div className="toast toast-center toast-top z-50 animate-fade">
-          <div
-            className={`alert ${
-              popupMessage.includes("liked") ? "alert-success" : "alert-error"
-            } shadow-md px-6 py-3 text-base font-medium`}
-          >
-            <span>{popupMessage}</span>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

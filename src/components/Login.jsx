@@ -28,9 +28,9 @@ const Login = () => {
       );
       console.log("Login successful:", response.data);
       toast.success("Login successful!");
+       navigate("/feed");
       dispatch(addCurrentUser(response.data.data));
-
-      navigate("/feed");
+     dispatch(setLoading(false));
     } catch (err) {
       console.log("Login error:", err);
       toast.error("Login failed. Please check your credentials.");

@@ -8,6 +8,7 @@ import { Base_URL } from "../utils/constants";
 
 const SingUp = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [skills, setSkills] = useState([]);
   const [skillInput, setSkillInput] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -73,8 +74,6 @@ const handleSignUp = async () => {
     formData.append('age', age);
     formData.append('gender', gender);
     formData.append('shortDescription', bio);
-    
-    // Append skills as JSON string
     formData.append('skills', skills);
     
     // ✅ Append image file - MUST be named 'photo' to match backend
