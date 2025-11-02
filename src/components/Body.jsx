@@ -6,22 +6,24 @@ import { Outlet } from "react-router-dom";
 
 const Body = () => {
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="bg-base-100 shadow-sm">
+    <div className="flex flex-col h-screen overflow-hidden">
+      <header className="bg-base-100 shadow-sm flex-shrink-0">
         <Navbar />
       </header>
 
-      <div className="flex flex-1">
-        <aside>
+      <div className="flex flex-1 overflow-hidden">
+        <aside className="flex-shrink-0">
           <Sidebar />
         </aside>
 
-        <main className="flex-1 flex justify-center items-start p-4">
-          <Outlet />
+        <main className="flex-1 overflow-y-auto p-4">
+          <div className="flex justify-center items-start">
+            <Outlet />
+          </div>
         </main>
       </div>
 
-      <footer className="bg-base-100 mt-auto">
+      <footer className="bg-base-100 flex-shrink-0">
         <Footer />
       </footer>
     </div>

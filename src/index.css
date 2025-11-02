@@ -6,6 +6,7 @@
   prefersdark: true;
   color-scheme: dark;
   
+ 
   /* Main content area - Deep charcoal */
   --color-base-100: oklch(18% 0.012 270); /* Darkest charcoal - main bg */
   
@@ -55,4 +56,17 @@
   /* Enhanced depth for shadows */
   --depth: 3;
   --noise: 0;
+}
+
+ @keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 2s ease-in-out infinite;
 }

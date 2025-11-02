@@ -13,7 +13,7 @@ const UserCard = ({ feedData, setMoveFeed }) => {
         { withCredentials: true }
       );
       console.log("Profile liked:", response.data);
-      setPopupMessage("💜 You liked this profile!");
+      setPopupMessage("You liked this profile!");
       setTimeout(() => {
         setPopupMessage(null);
         setMoveFeed((prev) => prev + 1);
@@ -23,7 +23,7 @@ const UserCard = ({ feedData, setMoveFeed }) => {
     }
   };
 
-  const handleReject =async (status) => {
+  const handleReject = async (status) => {
     try {
       const response = await axios.post(
         Base_URL + "/request/send/" + status + "/" + feedData._id,
@@ -31,8 +31,8 @@ const UserCard = ({ feedData, setMoveFeed }) => {
         { withCredentials: true }
       );
       console.log("Profile liked:", response.data);
-    setPopupMessage("❌ You rejected this profile!");
-   setTimeout(() => {
+      setPopupMessage("You rejected this profile!");
+      setTimeout(() => {
         setPopupMessage(null);
         setMoveFeed((prev) => prev + 1);
       }, 1000);
@@ -107,7 +107,7 @@ const UserCard = ({ feedData, setMoveFeed }) => {
           {/* Buttons */}
           <div className="flex gap-2 pt-1">
             <button
-              onClick={()=>handleLike("interested")}
+              onClick={() => handleLike("interested")}
               className="btn btn-xs sm:btn-sm flex-1 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white rounded-lg font-medium"
             >
               <svg
@@ -127,7 +127,7 @@ const UserCard = ({ feedData, setMoveFeed }) => {
               Like
             </button>
             <button
-              onClick={()=>handleReject("uninterested")}
+              onClick={() => handleReject("uninterested")}
               className="btn btn-xs sm:btn-sm flex-1 border-pink-500 text-pink-500 hover:bg-pink-500 hover:text-white  rounded-lg font-medium"
             >
               ✕ Reject
@@ -139,11 +139,60 @@ const UserCard = ({ feedData, setMoveFeed }) => {
         {popupMessage && (
           <div className="toast toast-center toast-top z-50">
             <div
-              className={`alert ${
-                popupMessage.includes("liked") ? "alert-success" : "alert-error"
-              } text-xs shadow-lg px-4 py-2 rounded-lg`}
+              className={`relative shadow-2xl px-6 py-4 rounded-full flex items-center gap-3 transform transition-all duration-300 ${
+                popupMessage.includes("liked")
+                  ? "bg-gradient-to-br from-pink-400 via-red-400 to-rose-500 text-white"
+                  : "bg-gradient-to-br from-gray-600 via-gray-700 to-gray-800 text-white"
+              } animate-[wiggle_0.5s_ease-in-out]`}
+              style={{
+                animation: "float 2s ease-in-out infinite",
+              }}
             >
-              <span>{popupMessage}</span>
+              {/* Sparkle effect for like */}
+              {popupMessage.includes("liked") && (
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-300 rounded-full animate-ping"></div>
+              )}
+
+              {/* Icon with pulse effect */}
+              <div
+                className={`flex-shrink-0 ${
+                  popupMessage.includes("liked") ? "animate-pulse" : ""
+                }`}
+              >
+                {popupMessage.includes("liked") ? (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-7 w-7 drop-shadow-lg"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                  </svg>
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-7 w-7 drop-shadow-lg"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                  </svg>
+                )}
+              </div>
+
+              {/* Message */}
+              <span className="font-bold text-base tracking-wide drop-shadow-md">
+                {popupMessage}
+              </span>
+
+              {/* Bubble tail (optional) */}
+              <div
+                className={`absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent ${
+                  popupMessage.includes("liked")
+                    ? "border-t-rose-500"
+                    : "border-t-gray-800"
+                }`}
+              ></div>
             </div>
           </div>
         )}

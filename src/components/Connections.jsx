@@ -40,7 +40,7 @@ const Connections = () => {
   return (
      <div className="w-full px-4 sm:px-6 lg:px-8 mt-2">
       <h1 className="text-3xl font-bold font-mono text-center mb-4 text-purple-700 tracking-wide">My Connections</h1>
-      <div className="max-w-7xl mx-auto flex flex-col gap-4 overflow-y-scroll">
+      <div className="max-w-7xl mx-auto flex flex-col gap-4 ">
         {connections && connections.length > 0 ? (
           connections.map((connection) => {
             return (
