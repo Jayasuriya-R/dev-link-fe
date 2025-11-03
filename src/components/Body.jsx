@@ -3,6 +3,7 @@ import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import Footer from "./Footer";
 import { Outlet } from "react-router-dom";
+import AiChat from "./AiChat";
 
 const Body = () => {
   return (
@@ -16,9 +17,12 @@ const Body = () => {
           <Sidebar />
         </aside>
 
-        <main className="flex-1 overflow-y-auto p-4">
+        <main className="flex-1 overflow-y-auto p-4 relative">
           <div className="flex justify-center items-start">
             <Outlet />
+          </div>
+          <div className="">
+            <AiChat/>
           </div>
         </main>
       </div>

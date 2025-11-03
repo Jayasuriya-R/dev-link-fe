@@ -35,7 +35,7 @@ const Connections = () => {
   if (requests.length === 0) {
     return (
       <h1 className="text-2xl font-semibold font-mono text-center mt-4">
-        No Connections Found{" "}
+        No Requests Found{" "}
       </h1>
     );
   }
