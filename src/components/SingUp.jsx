@@ -95,6 +95,7 @@ const handleSignUp = async () => {
     console.log("SignUp successful:", response.data);
     toast.success("SignUp successful!");
     navigate("/feed");
+    dispatch(loginUser())
     
   } catch (err) {
     console.log("SignUp error:", err);
