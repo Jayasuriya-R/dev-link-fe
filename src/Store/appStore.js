@@ -3,13 +3,15 @@ import AuthReducer from "./authSlice";
 import FeedReducer from "./feedSlice";
 import ConnectionReducer from "./connectionSlice";
 import RequestReducer from "./requestSlice";
+import aiChatReducer from "./aiChatSlice";
 
 const appStore = configureStore({
     reducer: {
     auth:AuthReducer,
     feed:FeedReducer,
     connection:ConnectionReducer,
-    requests:RequestReducer
+    requests:RequestReducer,
+    aiChat:aiChatReducer
   },
 })
 

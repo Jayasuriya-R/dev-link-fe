@@ -1,47 +1,82 @@
 import React from "react";
 import { MessageCircle, X } from "lucide-react";
 import { Send } from "lucide-react";
-import { input } from "framer-motion/client";
 import { systemPrompt } from "../utils/constants";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { useDispatch, useSelector } from "react-redux";
+import { addMessage } from "../Store/aiChatSlice";
 
+const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 const AiChat = () => {
-  const [messages, setMessage] = React.useState([
-    { user: false, text: "How can I assist you today?" },
-  ]);
+  const messages = useSelector((state) => state.aiChat);
+  const loggedInUser = useSelector((state) => state.auth.currentUser);
+  const dispatch = useDispatch();
   const [loading, setLoading] = React.useState(false);
   const [input, setInput] = React.useState("");
-  console.log("api key", import.meta.env.VITE_GEMINI_API_KEY);
-  const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 
   const handleSend = async () => {
-    setMessage((prev) => [...prev, { user: true, text: input }]);
+    if (!input.trim() || loading) return;
+    dispatch(addMessage({ user: true, text: input }));
     setInput("");
     setLoading(true);
-    try {
-      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
-      const result = await model.generateContent([
-        { role: "user", parts: [{ text: systemPrompt }] },
-        { role: "user", parts: [{ text: input }] },
-      ]);
+    const maxRetries = 3;
+    let attempt = 0;
 
-      const response = result.response.text();
+    while (attempt < maxRetries) {
+      try {
+        const model = genAI.getGenerativeModel({
+          model: "gemini-2.0-flash-exp",
+          systemInstruction: systemPrompt,
+        });
+        const result = await model.generateContent({
+          contents: [
+            {
+              role: "user",
+              parts: [
+                {
+                  text: `You are chatting with ${loggedInUser.firstName}, this is a small bio about the user : ${loggedInUser.shortDescription}.
+                  Their skills include: ${loggedInUser.skills.join(", ")}.Use this context to personalize your responses.User's message: ${input}`,
+                },
+              ],
+            },
+          ],
+        });
+        const responseText = result.response.text();
+        dispatch(addMessage({ user: false, text: responseText }));
+        break; // Success, exit loop
+      } catch (error) {
+        attempt++;
+        console.error(`AI Error (Attempt ${attempt}):`, error);
 
-      setMessage((prev) => [...prev, { user: false, text: response }]);
-      setLoading(false);
-    } catch (err) {
-      console.error("Error:", err);
-      setMessage((prev) => [
-        ...prev,
-        { user: false, text: "⚠️ Sorry, I couldn’t respond right now." },
-      ]);
-      setLoading(false);
+        if (error.message?.includes("429") && attempt < maxRetries) {
+          // Wait before retrying (exponential backoff)
+          const waitTime = Math.pow(2, attempt) * 1000;
+          dispatch(
+            addMessage({
+              user: false,
+              text: `⏳ Rate limit hit. Retrying in ${waitTime / 1000}s...`,
+            })
+          );
+          await new Promise((resolve) => setTimeout(resolve, waitTime));
+        } else {
+          dispatch(
+            addMessage({
+              user: false,
+              text: "⚠️ Rate limit exceeded. Please try again in a minute.",
+            })
+          );
+          break;
+        }
+      } finally {
+        if (attempt >= maxRetries || attempt === 0) {
+          setLoading(false);
+        }
+      }
     }
   };
-
   return (
-    <div className="fixed bottom-25 left-10 z-50">
+    <div className="fixed bottom-25 left-10 ">
       {/* Tooltip & Chat Button */}
       <div className="tooltip tooltip-top" data-tip="Chat with AI">
         <button
@@ -57,8 +92,10 @@ const AiChat = () => {
         <div className="relative w-[400px] max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
           <div className="card bg-base-300 w-full h-[60vh] sm:h-[40vh] md:h-[500px] shadow-2xl rounded-2xl border border-base-200 flex flex-col">
             {/* Header */}
-            <div className="flex items-center justify-between p-3 border-b border-base-200">
-              <h3 className="font-semibold text-lg">DevBot 🤖</h3>
+            <div className="flex items-center justify-between p-3 border-b-2 border-base-100">
+              <h3 className="font-bold text-xl bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 bg-clip-text text-transparent ">
+                DevMate 🤖⚡
+              </h3>
               <button
                 onClick={() => document.getElementById("my-modal").close()}
               >
@@ -94,7 +131,7 @@ const AiChat = () => {
             </div>
 
             {/* Input Bar */}
-            <div className="p-3 bg-base-200 border-t border-base-300 flex items-center gap-2">
+            <div className="p-3 bg-base-200 border-t rounded-b-2xl border-base-300 flex items-center gap-2">
               <input
                 type="text"
                 placeholder="Type your message..."
