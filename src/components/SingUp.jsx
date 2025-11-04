@@ -74,7 +74,7 @@ const handleSignUp = async () => {
     formData.append('age', age);
     formData.append('gender', gender);
     formData.append('shortDescription', bio);
-    formData.append('skills', skills);
+    formData.append('skills', JSON.stringify(skills));
     
     // ✅ Append image file - MUST be named 'photo' to match backend
     if (profileImage) {

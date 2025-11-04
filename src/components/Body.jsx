@@ -21,7 +21,7 @@ const Body = () => {
           <div className="flex justify-center items-start">
             <Outlet />
           </div>
-          <div className="">
+          <div >
             <AiChat/>
           </div>
         </main>
