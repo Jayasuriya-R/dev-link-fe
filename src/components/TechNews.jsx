@@ -159,7 +159,7 @@ const TechNews = () => {
       <div className="relative">
         <button
           onClick={toggleDrawer}
-          className="btn btn-ghost bg-secondary btn-circle relative"
+          className="btn btn-ghost bg-primary btn-circle relative"
           aria-label="Tech News"
         >
           <Bell className="w-5 h-5" />

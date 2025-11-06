@@ -11,6 +11,7 @@ import FeedContainer from "./components/FeedContainer";
 import Connections from "./components/Connections";
 import Requests from "./components/Requests";
 import TechNews from "./components/TechNews";
+import Messaging from "./components/Messaging";
 
 function App() {
   return (
@@ -23,7 +24,7 @@ function App() {
             <Route path="profile" element={<Profile />} />
             <Route path="connections" element={<Connections/>} />
             <Route path="requests" element={<Requests/>} />
-            
+            <Route path="message" element={<Messaging/>} />
           </Route>
         </Routes>
       </BrowserRouter>
