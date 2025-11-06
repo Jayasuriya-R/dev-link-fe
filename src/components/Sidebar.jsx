@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Home, User, Users, UserPlus,Newspaper } from "lucide-react";
+import { Home, User, Users, UserPlus,Newspaper, MessageCircleHeartIcon, MessageCircleCodeIcon } from "lucide-react";
 
-
+import { MessageSquare } from "lucide-react";
 
 
 const Sidebar = () => {
@@ -55,11 +55,11 @@ const Sidebar = () => {
           </li>
           <li>
             <Link
-              to="/news"
+              to="/message"
               className="flex items-center gap-3 hover:bg-base-200 rounded-lg p-2"
             >
-              <Newspaper className="w-5 h-5" />
-              Tech News
+              <MessageCircleCodeIcon className="w-5 h-5" />
+              Messaging
             </Link>
           </li>
         </ul>
