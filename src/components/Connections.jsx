@@ -4,6 +4,7 @@ import { setConnections } from "../Store/connectionSlice";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Base_URL } from "../utils/constants";
+import { useNavigate } from "react-router-dom";
 
 const Connections = () => {
   useEffect(() => {
@@ -11,6 +12,7 @@ const Connections = () => {
   }, []);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const connections = useSelector((state) => state.connection);
   console.log("Connections from store:", connections);
   const fetchConnections = async () => {
@@ -28,6 +30,11 @@ const Connections = () => {
       dispatch(setLoading(false));
     }
   };
+
+  const handleMessageClick = (id) =>{
+    navigate(`/message/${id}`)
+  }
+
   if (!connections) return;
   if (connections.length === 0) {
     return (
@@ -47,7 +54,7 @@ const Connections = () => {
               connection && (
                 <div
                   key={connection._id}
-                  className="bg-purple-100 rounded-lg shadow-md p-3 sm:p-4 lg:p-6"
+                  className="bg-purple-100 rounded-lg shadow-md p-3 sm:p-4 lg:p-6 hover:scale-103 transition-all ease-in-out 200"
                 >
                   <div className="flex flex-col gap-3">
                     {/* Top Section: Avatar, Name, Message Button */}
@@ -73,6 +80,7 @@ const Connections = () => {
                       <button
                         className="btn btn-ghost bg-base-100 btn-sm sm:btn-md btn-circle "
                         aria-label="Send message"
+                        onClick={()=>handleMessageClick(connection._id)}
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
