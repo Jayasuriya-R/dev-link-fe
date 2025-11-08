@@ -54,7 +54,7 @@ const Connections = () => {
               connection && (
                 <div
                   key={connection._id}
-                  className="bg-purple-100 rounded-lg shadow-md p-3 sm:p-4 lg:p-6 hover:scale-103 transition-all ease-in-out 200"
+                  className="bg-purple-100 rounded-lg shadow-md p-3 sm:p-4 lg:p-6 "
                 >
                   <div className="flex flex-col gap-3">
                     {/* Top Section: Avatar, Name, Message Button */}

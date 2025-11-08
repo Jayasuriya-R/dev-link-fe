@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { MessageCircle, X } from "lucide-react";
 import { Send } from "lucide-react";
 import { systemPrompt } from "../utils/constants";
@@ -13,6 +13,20 @@ const AiChat = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = React.useState(false);
   const [input, setInput] = React.useState("");
+  const chatRef = useRef(null);
+
+  useEffect(() => {
+  chatRef.current?.scrollIntoView({ behavior: "smooth" });
+}, [messages, loading]);
+
+useEffect(() => {
+  const dialogEl = document.getElementById("my-modal");
+  const scrollToBottom = () => {
+    setTimeout(() => chatRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
+  };
+  dialogEl.addEventListener("click", scrollToBottom); // fires when opened
+  return () => dialogEl.removeEventListener("click", scrollToBottom);
+}, []);
 
   const handleSend = async () => {
     if (!input.trim() || loading) return;
@@ -35,8 +49,14 @@ const AiChat = () => {
               role: "user",
               parts: [
                 {
-                  text: `You are chatting with ${loggedInUser.firstName}, this is a small bio about the user : ${loggedInUser.shortDescription}.
-                  Their skills include: ${loggedInUser.skills.join(", ")}.Use this context to personalize your responses.User's message: ${input}`,
+                  text: `You are chatting with ${
+                    loggedInUser.firstName
+                  }, this is a small bio about the user : ${
+                    loggedInUser.shortDescription
+                  }.
+                  Their skills include: ${loggedInUser.skills.join(
+                    ", "
+                  )}.Use this context to personalize your responses.User's message: ${input}`,
                 },
               ],
             },
@@ -105,22 +125,21 @@ const AiChat = () => {
 
             {/* Chat Body */}
             <div className="flex-1 p-3 overflow-y-auto space-y-2">
-              {messages.map((msg, i) => {
-                return (
+              {messages.map((msg, i) => (
+                <div
+                  key={i}
+                  className={`chat ${msg.user ? "chat-end" : "chat-start"}`}
+                >
                   <div
-                    key={i}
-                    className={`chat ${msg.user ? "chat-end" : "chat-start"}`}
+                    className={`chat-bubble ${
+                      msg.user ? "chat-bubble-neutral" : "chat-bubble-primary"
+                    }`}
                   >
-                    <div
-                      className={`chat-bubble ${
-                        msg.user ? "chat-bubble-neutral" : "chat-bubble-primary"
-                      }`}
-                    >
-                      {msg.text}
-                    </div>
+                    {msg.text}
                   </div>
-                );
-              })}
+                </div>
+              ))}
+
               {loading && (
                 <div className="chat chat-start">
                   <div className="chat-bubble chat-bubble-primary">
@@ -128,6 +147,9 @@ const AiChat = () => {
                   </div>
                 </div>
               )}
+
+              {/* 👇 LAST ELEMENT FOR AUTO-SCROLL */}
+              <div ref={chatRef} />
             </div>
 
             {/* Input Bar */}
