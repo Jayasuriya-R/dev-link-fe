@@ -32,6 +32,9 @@ const currentUserId = currentUser?._id
    const socket = createSocketConnection();
    socket.emit("joinChat",{currentUserId,targetUserId});
 
+   socket.on("receiveMessage",({newMsg,targetUserId})=>{
+    console.log(newMsg + " from user" +targetUserId)
+   })
    return ()=>{
     socket.disconnect();
    }
