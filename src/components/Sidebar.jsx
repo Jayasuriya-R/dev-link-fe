@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Home, User, Users, UserPlus,Newspaper, MessageCircleHeartIcon, MessageCircleCodeIcon } from "lucide-react";
+import { Bot } from "lucide-react";
 
 import { MessageSquare } from "lucide-react";
 
@@ -60,6 +61,15 @@ const Sidebar = () => {
             >
               <MessageCircleCodeIcon className="w-5 h-5" />
               Messaging
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/aimentor"
+              className="flex items-center gap-3 hover:bg-base-200 rounded-lg p-2"
+            >
+              <Bot className="w-5 h-5" />
+              Ai Mentor
             </Link>
           </li>
         </ul>

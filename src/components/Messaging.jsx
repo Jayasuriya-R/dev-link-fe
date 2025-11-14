@@ -1,49 +1,95 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
- Search, Send, Phone, Video, MoreVertical, Paperclip, Smile, ArrowLeft
+  Search,
+  Send,
+  Phone,
+  Video,
+  MoreVertical,
+  Paperclip,
+  Smile,
+  ArrowLeft,
 } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { createSocketConnection } from "../utils/socket";
-import { Socket } from "socket.io-client";
 
 const Messaging = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedChat, setSelectedChat] = useState(null);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState({});
-   const [showSidebar, setShowSidebar] = useState(true);
+  const [showSidebar, setShowSidebar] = useState(true);
   const params = useParams();
+  const socketRef = useRef(null);
 
   const currentUser = useSelector((state) => state.auth.currentUser);
   const connection = useSelector((state) => state.connection);
   const targetChat = connection.find(
-    (user) =>
-       user && user._id === params.targetUserId
+    (user) => user && user._id === params.targetUserId
   );
-const targetUserId = targetChat?._id
-const currentUserId = currentUser?._id
+  const targetUserId = targetChat?._id;
+  const currentUserId = currentUser?._id;
 
   useEffect(() => {
     setSelectedChat(targetChat);
-  }, []);
+  }, [targetChat]);
 
-  useEffect(()=>{
-   const socket = createSocketConnection();
-   socket.emit("joinChat",{currentUserId,targetUserId});
+  useEffect(() => {
+    if (!currentUserId) {
+      console.log("❌ No currentUserId, skipping socket connection");
+      return;
+    }
 
-   socket.on("receiveMessage",({newMsg,targetUserId})=>{
-    console.log(newMsg + " from user" +targetUserId)
-   })
-   return ()=>{
-    socket.disconnect();
-   }
-  },[])
+    console.log("🔌 Creating socket connection for user:", currentUserId);
+    const socket = createSocketConnection();
+    socketRef.current = socket;
 
+    // Listen for connection events
+    socket.on("connect", () => {
+      console.log("✅ Socket connected with ID:", socket.id);
+      
+      // Register user with their ID
+      socket.emit("register", { userId: currentUserId });
+      console.log("📝 Registered user:", currentUserId);
+    });
 
+    socket.on("connect_error", (error) => {
+      console.error("❌ Socket connection error:", error);
+    });
+
+    // Handle incoming messages
+    const handleReceiveMessage = ({ newMsg, senderId, firstName }) => {
+      console.log("📩 Received message:", {
+        text: newMsg.text,
+        from: firstName,
+        senderId: senderId,
+        timestamp: new Date().toISOString()
+      });
+      
+      // Add message to the correct chat using senderId
+      setMessages((prev) => {
+        const updated = {
+          ...prev,
+          [senderId]: [...(prev[senderId] || []), newMsg],
+        };
+        console.log("💾 Updated messages state for senderId:", senderId);
+        return updated;
+      });
+    };
+
+    socket.on("receiveMessage", handleReceiveMessage);
+
+    return () => {
+      console.log("🔌 Cleaning up socket connection");
+      socket.off("receiveMessage", handleReceiveMessage);
+      socket.off("connect");
+      socket.off("connect_error");
+      socket.disconnect();
+    };
+  }, [currentUserId]); // Only depend on currentUserId, not targetUserId
 
   const handleSendMessage = () => {
-    if (message.trim() && selectedChat) {
+    if (message.trim() && selectedChat && socketRef.current) {
       const newMsg = {
         text: message,
         time: new Date().toLocaleTimeString([], {
@@ -52,19 +98,41 @@ const currentUserId = currentUser?._id
         }),
         sender: "me",
       };
-       
-      const socket = createSocketConnection()
-      socket.emit("sendMessage",{currentUserId,targetUserId, newMsg})
-      
+
+      console.log("📤 Sending message:", {
+        from: currentUserId,
+        to: selectedChat._id,
+        text: newMsg.text,
+        socketConnected: socketRef.current.connected
+      });
+
+      // Emit message using the stored socket reference
+      socketRef.current.emit("sendMessage", {
+        currentUserId,
+        targetUserId: selectedChat._id,
+        newMsg,
+        firstName: currentUser.firstName,
+      });
+
+      // Update local state immediately for instant feedback
       setMessages((prev) => ({
         ...prev,
-        [selectedChat.id]: [...(prev[selectedChat.id] || []), newMsg],
+        [selectedChat._id]: [...(prev[selectedChat._id] || []), newMsg],
       }));
+      
       setMessage("");
+    } else {
+      console.warn("⚠️ Cannot send message:", {
+        hasMessage: !!message.trim(),
+        hasSelectedChat: !!selectedChat,
+        hasSocket: !!socketRef.current,
+        socketConnected: socketRef.current?.connected
+      });
     }
   };
 
-   const handleSelectChat = (con) => {
+  const handleSelectChat = (con) => {
+    console.log("💬 Selected chat:", con._id, con.firstName);
     setSelectedChat(con);
     setShowSidebar(false);
   };
@@ -73,16 +141,20 @@ const currentUserId = currentUser?._id
     setShowSidebar(true);
     setSelectedChat(null);
   };
-  const filteredConnections = connection.filter((con) =>
-  con&&  con.firstName.toLowerCase().includes(searchQuery.toLowerCase())
+
+  const filteredConnections = connection.filter(
+    (con) =>
+      con && con.firstName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
     <div className="flex h-[70vh] w-11/12 rounded-2xl bg-gray-50 overflow-hidden">
       {/* Sidebar - Responsive */}
-      <div className={`${
-        showSidebar ? 'flex' : 'hidden'
-      } md:flex w-full md:w-96 bg-white border-r border-gray-200 flex-col`}>
+      <div
+        className={`${
+          showSidebar ? "flex" : "hidden"
+        } md:flex w-full md:w-96 bg-white border-r border-gray-200 flex-col`}
+      >
         {/* User Profile Header */}
         <div className="p-4 border-b border-gray-200">
           <div className="flex items-center gap-3">
@@ -98,7 +170,7 @@ const currentUserId = currentUser?._id
               <h1 className="font-semibold text-gray-900 text-sm md:text-base">
                 {currentUser?.firstName} {currentUser?.lastName}
               </h1>
-              <p className="text-xs text-green-600">Active now</p>
+              
             </div>
             <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
               <MoreVertical className="w-5 h-5 text-gray-600" />
@@ -144,9 +216,13 @@ const currentUserId = currentUser?._id
                   <h2 className="font-semibold text-sm md:text-base text-gray-900 truncate">
                     {con?.firstName} {con?.lastName}
                   </h2>
-                  <span className="text-xs text-gray-500 ml-2">10 AM</span>
+                  <span className="text-xs text-gray-500 ml-2">
+                    {messages[con._id]?.[messages[con._id].length - 1]?.time || ""}
+                  </span>
                 </div>
-                <p className="text-xs md:text-sm text-gray-600 truncate">Hi there..</p>
+                <p className="text-xs md:text-sm text-gray-600 truncate">
+                  {messages[con._id]?.[messages[con._id].length - 1]?.text || "Start chatting..."}
+                </p>
               </div>
               {con.unread > 0 && (
                 <div className="flex-shrink-0 w-5 h-5 md:w-6 md:h-6 bg-blue-500 rounded-full flex items-center justify-center">
@@ -161,16 +237,18 @@ const currentUserId = currentUser?._id
       </div>
 
       {/* Chat Area - Responsive */}
-      <div className={`${
-        !showSidebar ? 'flex' : 'hidden'
-      } md:flex flex-1 flex-col`}>
+      <div
+        className={`${
+          !showSidebar ? "flex" : "hidden"
+        } md:flex flex-1 flex-col`}
+      >
         {selectedChat ? (
           <>
             {/* Chat Header */}
             <div className="bg-white border-b border-gray-200 p-3 md:p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 md:gap-3">
-                  <button 
+                  <button
                     onClick={handleBackToList}
                     className="md:hidden p-2 hover:bg-gray-100 rounded-full transition-colors"
                   >
@@ -190,9 +268,7 @@ const currentUserId = currentUser?._id
                     <h2 className="font-semibold text-sm md:text-base text-gray-900">
                       {selectedChat?.firstName} {selectedChat?.lastName}
                     </h2>
-                    <p className="text-xs text-gray-500">
-                      {selectedChat.online ? "Active now" : "Offline"}
-                    </p>
+                    
                   </div>
                 </div>
                 <div className="flex gap-1 md:gap-2">
@@ -211,7 +287,7 @@ const currentUserId = currentUser?._id
 
             {/* Messages Area */}
             <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-3 md:space-y-4 bg-gray-50">
-              {messages[selectedChat.id]?.map((msg, idx) => (
+              {messages[selectedChat._id]?.map((msg, idx) => (
                 <div
                   key={idx}
                   className={`flex flex-col ${
@@ -233,8 +309,8 @@ const currentUserId = currentUser?._id
                 </div>
               ))}
 
-              {(!messages[selectedChat.id] ||
-                messages[selectedChat.id].length === 0) && (
+              {(!messages[selectedChat._id] ||
+                messages[selectedChat._id].length === 0) && (
                 <div className="flex flex-col items-center justify-center h-full text-center px-4">
                   <div className="w-16 h-16 md:w-20 md:h-20 bg-gray-200 rounded-full flex items-center justify-center mb-4">
                     <Send className="w-8 h-8 md:w-10 md:h-10 text-gray-400" />

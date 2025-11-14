@@ -72,68 +72,87 @@ const TechNews = () => {
   const unreadCount = articles.filter(a => !a.isRead).length;
 
   useEffect(() => {
-    const fetchNews = async () => {
-      try {
-        if (!skills || skills.length === 0) return;
+  const fetchNews = async () => {
+    try {
+      if (!skills || skills.length === 0) return;
 
-        const personalizedPrompt = NewsPrompt.replace(
-          "{{skills}}",
-          skills.join(", ")
-        );
+      const lastFetched = localStorage.getItem("techNewsLastFetched");
+      const cachedArticles = JSON.parse(localStorage.getItem("techNewsData"));
+      const now = Date.now();
+      const oneDay = 24 * 60 * 60 * 1000; 
 
-        const model = genAI.getGenerativeModel({
-          model: "gemini-2.0-flash-exp",
-          systemInstruction: personalizedPrompt,
-        });
-
-        const result = await model.generateContent({
-          contents: [
-            {
-              role: "user",
-              parts: [
-                {
-                  text: `Provide latest tech news relevant to ${skills.join(
-                    ", "
-                  )}.`,
-                },
-              ],
-            },
-          ],
-        });
-
-        let responseText = result.response.text();
-
-        responseText = responseText
-          .replace(/```json/g, "")
-          .replace(/```/g, "")
-          .trim();
-
-        let newsData;
-        try {
-          newsData = JSON.parse(responseText);
-        } catch (parseError) {
-          console.error("JSON Parse Error:", parseError, responseText);
-          return;
-        }
-
-        if (Array.isArray(newsData) && newsData.length > 0) {
-          // Add isRead property to each article
-          const articlesWithReadStatus = newsData.map(article => ({
-            ...article,
-            isRead: false
-          }));
-          setArticles(articlesWithReadStatus);
-        } else {
-          console.warn("No valid news articles found.");
-          setArticles([]);
-        }
-      } catch (error) {
-        console.error("Error fetching news:", error);
+      // ✅ If cached news exists AND it's less than 24 hrs old → use cache
+      if (cachedArticles && lastFetched && now - lastFetched < oneDay) {
+        console.log("📌 Using cached news");
+        setArticles(cachedArticles);
+        return;
       }
-    };
 
-    fetchNews();
-  }, [skills]);
+      console.log("🌐 Fetching fresh news...");
+      
+      // --- Your API Logic (Gemini) ---
+      const personalizedPrompt = NewsPrompt.replace(
+        "{{skills}}",
+        skills.join(", ")
+      );
+
+      const model = genAI.getGenerativeModel({
+        model: "gemini-2.0-flash-exp",
+        systemInstruction: personalizedPrompt,
+      });
+
+      const result = await model.generateContent({
+        contents: [
+          {
+            role: "user",
+            parts: [
+              {
+                text: `Provide latest tech news relevant to ${skills.join(", ")}.`,
+              },
+            ],
+          },
+        ],
+      });
+
+      let responseText = result.response.text();
+
+      responseText = responseText
+        .replace(/```json/g, "")
+        .replace(/```/g, "")
+        .trim();
+
+      let newsData;
+      try {
+        newsData = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error("JSON Parse Error:", parseError, responseText);
+        return;
+      }
+
+      if (Array.isArray(newsData) && newsData.length > 0) {
+        const articlesWithReadStatus = newsData.map(article => ({
+          ...article,
+          isRead: false
+        }));
+
+        setArticles(articlesWithReadStatus);
+
+        // ✅ Store in localStorage for next day
+        localStorage.setItem("techNewsData", JSON.stringify(articlesWithReadStatus));
+        localStorage.setItem("techNewsLastFetched", Date.now());
+      } else {
+        console.warn("No valid news articles found.");
+        setArticles([]);
+      }
+
+    } catch (error) {
+      console.error("Error fetching news:", error);
+    }
+  };
+
+  fetchNews();
+}, [skills]);
+
 
   const toggleDrawer = () => {
     setIsOpen(!isOpen);
