@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Bell, X, Globe2, Filter } from 'lucide-react';
 import { useSelector } from 'react-redux';
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import { NewsPrompt } from '../utils/constants';
-
-const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 
 const NewsCard = ({ title, description, source, url, urlToImage, isRead, onMarkRead }) => {
   return (
@@ -67,105 +64,124 @@ const TechNews = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [articles, setArticles] = useState([]);
   const [filter, setFilter] = useState('all');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
   const { skills } = useSelector((state) => state.auth.currentUser);
 
   const unreadCount = articles.filter(a => !a.isRead).length;
 
   useEffect(() => {
-  const fetchNews = async () => {
-    try {
-      if (!skills || skills.length === 0) return;
-
-      const lastFetched = localStorage.getItem("techNewsLastFetched");
-      const cachedArticles = JSON.parse(localStorage.getItem("techNewsData"));
-      const now = Date.now();
-      const oneDay = 24 * 60 * 60 * 1000; 
-
-      // ✅ If cached news exists AND it's less than 24 hrs old → use cache
-      if (cachedArticles && lastFetched && now - lastFetched < oneDay) {
-        console.log("📌 Using cached news");
-        setArticles(cachedArticles);
-        return;
-      }
-
-      console.log("🌐 Fetching fresh news...");
-      
-      // --- Your API Logic (Gemini) ---
-      const personalizedPrompt = NewsPrompt.replace(
-        "{{skills}}",
-        skills.join(", ")
-      );
-
-      const model = genAI.getGenerativeModel({
-        model: "gemini-2.0-flash-exp",
-        systemInstruction: personalizedPrompt,
-      });
-
-      const result = await model.generateContent({
-        contents: [
-          {
-            role: "user",
-            parts: [
-              {
-                text: `Provide latest tech news relevant to ${skills.join(", ")}.`,
-              },
-            ],
-          },
-        ],
-      });
-
-      let responseText = result.response.text();
-
-      responseText = responseText
-        .replace(/```json/g, "")
-        .replace(/```/g, "")
-        .trim();
-
-      let newsData;
+    const fetchNews = async () => {
       try {
-        newsData = JSON.parse(responseText);
-      } catch (parseError) {
-        console.error("JSON Parse Error:", parseError, responseText);
-        return;
+        if (!skills || skills.length === 0) return;
+
+        const lastFetched = localStorage.getItem("techNewsLastFetched");
+        const cachedArticles = localStorage.getItem("techNewsData");
+        const now = Date.now();
+        const oneDay = 24 * 60 * 60 * 1000; 
+
+        // ✅ If cached news exists AND it's less than 24 hrs old → use cache
+        if (cachedArticles && lastFetched && now - parseInt(lastFetched) < oneDay) {
+          console.log("📌 Using cached news (last fetched:", new Date(parseInt(lastFetched)).toLocaleString() + ")");
+          setArticles(JSON.parse(cachedArticles));
+          return;
+        }
+
+        console.log("🌐 Fetching fresh news...");
+        setIsLoading(true);
+        setError(null);
+        
+        // 🔥 Updated: Using Groq API instead of Gemini
+        const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${import.meta.env.VITE_GROQ_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: 'llama-3.3-70b-versatile',
+            messages: [
+              {
+                role: 'system',
+                content: NewsPrompt
+              },
+              {
+                role: 'user',
+                content: `Provide 2 latest tech news articles relevant to ${skills.join(", ")}.`
+              }
+            ],
+            temperature: 0.7,
+            max_tokens: 2000
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`API Error: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        let responseText = data.choices[0].message.content;
+
+        // Clean up response
+        responseText = responseText
+          .replace(/```json/g, "")
+          .replace(/```/g, "")
+          .trim();
+
+        let newsData;
+        try {
+          newsData = JSON.parse(responseText);
+        } catch (parseError) {
+          console.error("JSON Parse Error:", parseError, responseText);
+          setError("Failed to parse news data");
+          return;
+        }
+
+        if (Array.isArray(newsData) && newsData.length > 0) {
+          const articlesWithReadStatus = newsData.map(article => ({
+            ...article,
+            isRead: false
+          }));
+
+          setArticles(articlesWithReadStatus);
+
+          // ✅ Store in localStorage for next day
+          localStorage.setItem("techNewsData", JSON.stringify(articlesWithReadStatus));
+          localStorage.setItem("techNewsLastFetched", Date.now().toString());
+        } else {
+          console.warn("No valid news articles found.");
+          setArticles([]);
+        }
+
+      } catch (error) {
+        console.error("Error fetching news:", error);
+        setError(error.message);
+      } finally {
+        setIsLoading(false);
       }
+    };
 
-      if (Array.isArray(newsData) && newsData.length > 0) {
-        const articlesWithReadStatus = newsData.map(article => ({
-          ...article,
-          isRead: false
-        }));
-
-        setArticles(articlesWithReadStatus);
-
-        // ✅ Store in localStorage for next day
-        localStorage.setItem("techNewsData", JSON.stringify(articlesWithReadStatus));
-        localStorage.setItem("techNewsLastFetched", Date.now());
-      } else {
-        console.warn("No valid news articles found.");
-        setArticles([]);
-      }
-
-    } catch (error) {
-      console.error("Error fetching news:", error);
-    }
-  };
-
-  fetchNews();
-}, [skills]);
-
+    fetchNews();
+  }, [skills]);
 
   const toggleDrawer = () => {
     setIsOpen(!isOpen);
   };
 
   const markAsRead = (index) => {
-    setArticles(articles.map((article, i) => 
+    const updatedArticles = articles.map((article, i) => 
       i === index ? { ...article, isRead: true } : article
-    ));
+    );
+    setArticles(updatedArticles);
+    // Update cache with read status
+    localStorage.setItem("techNewsData", JSON.stringify(updatedArticles));
   };
 
   const markAllAsRead = () => {
-    setArticles(articles.map(article => ({ ...article, isRead: true })));
+    const updatedArticles = articles.map(article => ({ ...article, isRead: true }));
+    setArticles(updatedArticles);
+    // Update cache with read status
+    localStorage.setItem("techNewsData", JSON.stringify(updatedArticles));
   };
 
   const filteredArticles = filter === 'all' 
@@ -250,7 +266,18 @@ const TechNews = () => {
 
         {/* News List */}
         <div className="overflow-y-auto h-full pb-20">
-          {filteredArticles.length === 0 ? (
+          {isLoading ? (
+            <div className="p-8 text-center">
+              <div className="loading loading-spinner loading-lg text-primary"></div>
+              <p className="mt-4 text-base-content/70">Loading news...</p>
+            </div>
+          ) : error ? (
+            <div className="p-8 text-center">
+              <div className="alert alert-error">
+                <span>{error}</span>
+              </div>
+            </div>
+          ) : filteredArticles.length === 0 ? (
             <div className="p-8 text-center">
               <Bell className="w-16 h-16 mx-auto mb-3 opacity-20" />
               <p className="font-medium text-base-content/70">No news articles</p>

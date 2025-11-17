@@ -2,11 +2,9 @@ import React, { useEffect, useRef } from "react";
 import { MessageCircle, X } from "lucide-react";
 import { Send } from "lucide-react";
 import { systemPrompt } from "../utils/constants";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { useDispatch, useSelector } from "react-redux";
 import { addMessage } from "../Store/aiChatSlice";
 
-const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 const AiChat = () => {
   const messages = useSelector((state) => state.aiChat);
   const loggedInUser = useSelector((state) => state.auth.currentUser);
@@ -16,21 +14,26 @@ const AiChat = () => {
   const chatRef = useRef(null);
 
   useEffect(() => {
-  chatRef.current?.scrollIntoView({ behavior: "smooth" });
-}, [messages, loading]);
+    chatRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, loading]);
 
-useEffect(() => {
-  const dialogEl = document.getElementById("my-modal");
-  const scrollToBottom = () => {
-    setTimeout(() => chatRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
-  };
-  dialogEl.addEventListener("click", scrollToBottom); // fires when opened
-  return () => dialogEl.removeEventListener("click", scrollToBottom);
-}, []);
+  useEffect(() => {
+    const dialogEl = document.getElementById("my-modal");
+    const scrollToBottom = () => {
+      setTimeout(
+        () => chatRef.current?.scrollIntoView({ behavior: "smooth" }),
+        100
+      );
+    };
+    dialogEl.addEventListener("click", scrollToBottom);
+    return () => dialogEl.removeEventListener("click", scrollToBottom);
+  }, []);
 
   const handleSend = async () => {
     if (!input.trim() || loading) return;
-    dispatch(addMessage({ user: true, text: input }));
+
+    const userMessage = input;
+    dispatch(addMessage({ user: true, text: userMessage }));
     setInput("");
     setLoading(true);
 
@@ -39,30 +42,51 @@ useEffect(() => {
 
     while (attempt < maxRetries) {
       try {
-        const model = genAI.getGenerativeModel({
-          model: "gemini-2.0-flash-exp",
-          systemInstruction: systemPrompt,
-        });
-        const result = await model.generateContent({
-          contents: [
-            {
-              role: "user",
-              parts: [
+        // 🔥 Using Groq API
+        const response = await fetch(
+          "https://api.groq.com/openai/v1/chat/completions",
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${import.meta.env.VITE_GROQ_API_KEY}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              model: "llama-3.3-70b-versatile",
+              messages: [
                 {
-                  text: `You are chatting with ${
-                    loggedInUser.firstName
-                  }, this is a small bio about the user : ${
-                    loggedInUser.shortDescription
-                  }.
-                  Their skills include: ${loggedInUser.skills.join(
-                    ", "
-                  )}.Use this context to personalize your responses.User's message: ${input}`,
+                  role: "system",
+                  content: `${systemPrompt}
+
+You are chatting with ${loggedInUser.firstName}. Here's their profile:
+- Bio: ${loggedInUser.shortDescription}
+- Skills: ${loggedInUser.skills.join(", ")}
+
+Use this context to personalize your responses and provide relevant advice.`,
+                },
+                {
+                  role: "user",
+                  content: userMessage,
                 },
               ],
-            },
-          ],
-        });
-        const responseText = result.response.text();
+              temperature: 0.7,
+              max_tokens: 1000,
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(
+            `API Error: ${response.status} - ${
+              errorData.error?.message || response.statusText
+            }`
+          );
+        }
+
+        const data = await response.json();
+        const responseText = data.choices[0].message.content;
+
         dispatch(addMessage({ user: false, text: responseText }));
         break; // Success, exit loop
       } catch (error) {
@@ -79,11 +103,19 @@ useEffect(() => {
             })
           );
           await new Promise((resolve) => setTimeout(resolve, waitTime));
+        } else if (attempt >= maxRetries) {
+          dispatch(
+            addMessage({
+              user: false,
+              text: "⚠️ Sorry, I'm having trouble responding right now. Please try again in a moment.",
+            })
+          );
+          break;
         } else {
           dispatch(
             addMessage({
               user: false,
-              text: "⚠️ Rate limit exceeded. Please try again in a minute.",
+              text: `⚠️ Error: ${error.message}`,
             })
           );
           break;
@@ -95,6 +127,14 @@ useEffect(() => {
       }
     }
   };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
   return (
     <div className="fixed bottom-25 left-10 ">
       {/* Tooltip & Chat Button */}
@@ -160,10 +200,12 @@ useEffect(() => {
                 className="input input-bordered input-md flex-1 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
+                onKeyPress={handleKeyPress}
               />
               <button
                 onClick={handleSend}
-                className="btn btn-primary btn-md rounded-xl flex items-center gap-2 shadow-md hover:scale-105 transition-transform"
+                disabled={loading || !input.trim()}
+                className="btn btn-primary btn-md rounded-xl flex items-center gap-2 shadow-md hover:scale-105 transition-transform disabled:opacity-50"
               >
                 <Send className="w-5 h-5" />
               </button>
