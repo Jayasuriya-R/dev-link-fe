@@ -16,15 +16,15 @@ const SkillAnalyse = ({ skills }) => {
   const [skillAnalysis, setSkillAnalysis] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const dispatch = useDispatch()
-  const analysedData = useSelector(state => state.skillAnalysisData)
+  const dispatch = useDispatch();
+  const analysedData = useSelector((state) => state.skillAnalysisData);
 
   useEffect(() => {
     if (skills && skills.length > 0) {
-      if(Object.entries(analysedData).length === 0){
-          SkillAnalysis_quiz();
-      }else{
-        setSkillAnalysis(analysedData)
+      if (Object.entries(analysedData).length === 0) {
+        SkillAnalysis_quiz();
+      } else {
+        setSkillAnalysis(analysedData);
       }
     }
   }, [skills]);
@@ -75,7 +75,7 @@ const SkillAnalyse = ({ skills }) => {
 
       const parsed = JSON.parse(responseText);
       setSkillAnalysis(parsed);
-      dispatch(addAnalysedData(parsed))
+      dispatch(addAnalysedData(parsed));
     } catch (err) {
       console.error("Error fetching skill analysis:", err);
       setError(err.message);
@@ -120,10 +120,10 @@ const SkillAnalyse = ({ skills }) => {
           <div className="alert bg-gradient-to-r h-20 overflow-y-auto from-primary/10 to-secondary/10 border-primary/20">
             <TrendingUp className="w-5 h-5 text-primary" />
             <div>
-              <h3 className="font-semibold">{greeting}</h3>
               {profession && (
                 <p className="text-sm text-base-content/70">{profession}</p>
               )}
+              <h3 className="font-semibold">{greeting}</h3>
             </div>
           </div>
         )}
@@ -162,7 +162,7 @@ const SkillAnalyse = ({ skills }) => {
         {/* Missing Skills Collapse */}
         {!isLoading && (
           <div className="collapse collapse-arrow bg-base-300 border border-base-200 shadow-sm hover:shadow-md transition-shadow">
-            <input type="radio"  name="skills-accordion"/>
+            <input type="radio" name="skills-accordion" />
             <div className="collapse-title font-semibold flex items-center gap-2">
               <AlertCircle className="w-5 h-5 text-warning" />
               Skills to Level Up

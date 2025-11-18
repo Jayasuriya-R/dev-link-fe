@@ -38,7 +38,7 @@ const QuizPopup = ({ questions }) => {
   else proficiency = "Advanced 🚀";
 
   return (
-      <div className="bg-base-200 w-[500px] p-6 rounded-xl shadow-lg relative">
+      <div className="bg-neutral w-[500px] p-6 rounded-xl shadow-lg relative">
 
         {/* Close Button */}
         <button
@@ -96,7 +96,7 @@ const QuizPopup = ({ questions }) => {
 
             {/* Next Button */}
             <button
-              className="btn btn-success btn-lg w-full mt-5"
+              className="btn btn-secondary btn-lg w-full mt-5"
               onClick={handleAnswer}
             >
               {current === questions.length - 1 ? "Finish Quiz" : "Next"}

@@ -3,6 +3,7 @@ import { Brain, Send } from "lucide-react";
 import { AiMentorPrompt } from "../utils/constants";
 import SkillAnalyse from "./SkillAnalyse";
 import { useSelector } from "react-redux";
+import ActionItems from "./ActionItems";
 
 const AiMentor = () => {
   const [messages, setMessages] = useState([
@@ -145,7 +146,7 @@ const AiMentor = () => {
           <div className="col-span-5 flex flex-col min-h-0">
             <div className="card bg-base-300 shadow-sm flex-1 flex flex-col min-h-0">
               {/* Tab Headers */}
-              <div className="flex border-b-2 border-base-100 bg-base-200 flex-shrink-0">
+              <div className="flex border-b-2 p-3 border-base-100 bg-base-200 flex-shrink-0">
                 <button
                   className={`flex-1 px-3 py-3 text-sm font-semibold transition-colors ${
                     activeTab === "skills"
@@ -188,7 +189,7 @@ const AiMentor = () => {
                     <div className="h-full overflow-y-auto">
                       <h3 className="text-xl font-bold mb-4">Action Items</h3>
                       <p className="text-base-content/70">
-                        Your action items will appear here...
+                        <ActionItems/>
                       </p>
                     </div>
                   )}
