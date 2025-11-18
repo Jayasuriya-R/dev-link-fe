@@ -9,15 +9,23 @@ import {
 import React, { useEffect, useState } from "react";
 import QuizPopup from "./QuizPopup";
 import { skillAnalysisPrompt } from "../utils/constants";
+import { useDispatch, useSelector } from "react-redux";
+import { addAnalysedData } from "../Store/skillAnalyseSlice";
 
 const SkillAnalyse = ({ skills }) => {
   const [skillAnalysis, setSkillAnalysis] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const dispatch = useDispatch()
+  const analysedData = useSelector(state => state.skillAnalysisData)
 
   useEffect(() => {
     if (skills && skills.length > 0) {
-      SkillAnalysis_quiz();
+      if(Object.entries(analysedData).length === 0){
+          SkillAnalysis_quiz();
+      }else{
+        setSkillAnalysis(analysedData)
+      }
     }
   }, [skills]);
 
@@ -67,6 +75,7 @@ const SkillAnalyse = ({ skills }) => {
 
       const parsed = JSON.parse(responseText);
       setSkillAnalysis(parsed);
+      dispatch(addAnalysedData(parsed))
     } catch (err) {
       console.error("Error fetching skill analysis:", err);
       setError(err.message);
@@ -108,7 +117,7 @@ const SkillAnalyse = ({ skills }) => {
 
         {/* Greeting Card */}
         {greeting && !isLoading && (
-          <div className="alert bg-gradient-to-r h-24 overflow-y-auto from-primary/10 to-secondary/10 border-primary/20">
+          <div className="alert bg-gradient-to-r h-20 overflow-y-auto from-primary/10 to-secondary/10 border-primary/20">
             <TrendingUp className="w-5 h-5 text-primary" />
             <div>
               <h3 className="font-semibold">{greeting}</h3>
@@ -121,7 +130,7 @@ const SkillAnalyse = ({ skills }) => {
 
         {/* Current Skills Collapse */}
         <div className="collapse collapse-arrow bg-base-300 border border-base-200 shadow-sm hover:shadow-md transition-shadow">
-          <input type="checkbox" defaultChecked />
+          <input type="radio" name="skills-accordion" />
           <div className="collapse-title font-semibold flex items-center gap-2">
             <CheckCircle2 className="w-5 h-5 text-success" />
             Current Skills
@@ -153,7 +162,7 @@ const SkillAnalyse = ({ skills }) => {
         {/* Missing Skills Collapse */}
         {!isLoading && (
           <div className="collapse collapse-arrow bg-base-300 border border-base-200 shadow-sm hover:shadow-md transition-shadow">
-            <input type="checkbox" defaultChecked />
+            <input type="radio"  name="skills-accordion"/>
             <div className="collapse-title font-semibold flex items-center gap-2">
               <AlertCircle className="w-5 h-5 text-warning" />
               Skills to Level Up
@@ -235,7 +244,7 @@ const SkillAnalyse = ({ skills }) => {
           skills.length > 0 &&
           missingSkills.length > 0 && (
             <div className="collapse collapse-arrow bg-base-300 border border-base-200 shadow-sm hover:shadow-md transition-all">
-              <input type="checkbox" defaultChecked />
+              <input type="radio" name="skills-accordion" />
 
               <div className="collapse-title font-semibold flex items-center gap-2">
                 📊 Stats Overview

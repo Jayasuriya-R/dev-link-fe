@@ -15,7 +15,6 @@ const AiMentor = () => {
   const [chat, setChat] = useState("");
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("skills");
-  const generatorRef = useRef(null);
   const curUser = useSelector((state) => state.auth.currentUser);
 
   const handleSend = () => {
