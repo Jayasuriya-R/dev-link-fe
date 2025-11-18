@@ -77,13 +77,15 @@ const SkillAnalyse = ({ skills }) => {
 
   // Safe access to nested data
   const greeting = skillAnalysis?.text?.greeting || skillAnalysis?.greeting;
-  const profession = skillAnalysis?.text?.profession || skillAnalysis?.profession;
-  const missingSkills = skillAnalysis?.text?.missingSkills || skillAnalysis?.missingSkills || [];
+  const profession =
+    skillAnalysis?.text?.profession || skillAnalysis?.profession;
+  const missingSkills =
+    skillAnalysis?.text?.missingSkills || skillAnalysis?.missingSkills || [];
   const quiz = skillAnalysis?.text?.quiz || skillAnalysis?.quiz || [];
 
   return (
     <>
-      <div className="flex flex-col gap-4  overflow-y-scroll">
+      <div className="flex flex-col gap-4 pb-4">
         {/* Loading State */}
         {isLoading && (
           <div className="flex items-center justify-center p-8">
@@ -106,7 +108,7 @@ const SkillAnalyse = ({ skills }) => {
 
         {/* Greeting Card */}
         {greeting && !isLoading && (
-          <div className="alert bg-gradient-to-r from-primary/10 to-secondary/10 border-primary/20">
+          <div className="alert bg-gradient-to-r h-24 overflow-y-auto from-primary/10 to-secondary/10 border-primary/20">
             <TrendingUp className="w-5 h-5 text-primary" />
             <div>
               <h3 className="font-semibold">{greeting}</h3>
@@ -119,7 +121,7 @@ const SkillAnalyse = ({ skills }) => {
 
         {/* Current Skills Collapse */}
         <div className="collapse collapse-arrow bg-base-300 border border-base-200 shadow-sm hover:shadow-md transition-shadow">
-          <input type="radio" name="skills-accordion" defaultChecked />
+          <input type="checkbox" defaultChecked />
           <div className="collapse-title font-semibold flex items-center gap-2">
             <CheckCircle2 className="w-5 h-5 text-success" />
             Current Skills
@@ -128,7 +130,7 @@ const SkillAnalyse = ({ skills }) => {
             </span>
           </div>
           <div className="collapse-content">
-            <div className="flex flex-wrap gap-2 pt-2">
+            <div className="flex flex-wrap gap-2 pt-2 max-h-40 overflow-y-auto pr-1">
               {skills && skills.length > 0 ? (
                 skills.map((skill, index) => (
                   <div
@@ -151,7 +153,7 @@ const SkillAnalyse = ({ skills }) => {
         {/* Missing Skills Collapse */}
         {!isLoading && (
           <div className="collapse collapse-arrow bg-base-300 border border-base-200 shadow-sm hover:shadow-md transition-shadow">
-            <input type="radio" name="skills-accordion" />
+            <input type="checkbox" defaultChecked />
             <div className="collapse-title font-semibold flex items-center gap-2">
               <AlertCircle className="w-5 h-5 text-warning" />
               Skills to Level Up
@@ -162,34 +164,26 @@ const SkillAnalyse = ({ skills }) => {
               )}
             </div>
             <div className="collapse-content">
-              {missingSkills.length > 0 ? (
-                <div className="space-y-3 pt-2">
-                  {missingSkills.map((item, index) => (
-                    <div
-                      key={index}
-                      className="p-3 bg-base-100 rounded-lg border border-base-200 hover:border-warning/50 transition-colors"
-                    >
-                      <div className="flex items-start gap-2">
-                        <Zap className="w-4 h-4 text-warning mt-0.5 flex-shrink-0" />
-                        <div className="flex-1">
-                          <h4 className="font-semibold text-sm mb-1">
-                            {item.skill}
-                          </h4>
-                          <p className="text-xs text-base-content/70 leading-relaxed">
-                            {item.description}
-                          </p>
-                        </div>
+              <div className="space-y-3 pt-2 max-h-64 overflow-y-auto pr-1">
+                {missingSkills.map((item, index) => (
+                  <div
+                    key={index}
+                    className="p-3 bg-base-100 rounded-lg border border-base-200 hover:border-warning/50 transition-colors"
+                  >
+                    <div className="flex items-start gap-2">
+                      <Zap className="w-4 h-4 text-warning mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-sm mb-1">
+                          {item.skill}
+                        </h4>
+                        <p className="text-xs text-base-content/70 leading-relaxed">
+                          {item.description}
+                        </p>
                       </div>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-sm text-base-content/60 pt-2">
-                  {skillAnalysis?.text || skillAnalysis
-                    ? "Great! You're well-rounded in your stack."
-                    : "Add your skills to get personalized recommendations!"}
-                </p>
-              )}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}
@@ -202,7 +196,7 @@ const SkillAnalyse = ({ skills }) => {
             <div
               className="group cursor-pointer p-4 bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-[1.02]"
               onClick={() => {
-                document.getElementById("quiz-modal")?.showModal();
+                document.getElementById("quiz-modal").showModal();
               }}
             >
               <div className="flex items-center gap-3">
@@ -235,34 +229,52 @@ const SkillAnalyse = ({ skills }) => {
           </>
         )}
 
-        {/* Stats Card */}
+        {/* Stats Card Accordion */}
         {!isLoading &&
           skills &&
           skills.length > 0 &&
           missingSkills.length > 0 && (
-            <div className="stats stats-vertical lg:stats-horizontal shadow bg-base-200">
-              <div className="stat place-items-center">
-                <div className="stat-title text-xs">Current Skills</div>
-                <div className="stat-value text-2xl text-success">
-                  {skills.length}
-                </div>
-              </div>
+            <div className="collapse collapse-arrow bg-base-300 border border-base-200 shadow-sm hover:shadow-md transition-all">
+              <input type="checkbox" defaultChecked />
 
-              <div className="stat place-items-center">
-                <div className="stat-title text-xs">To Learn</div>
-                <div className="stat-value text-2xl text-warning">
-                  {missingSkills.length}
-                </div>
-              </div>
-
-              <div className="stat place-items-center">
-                <div className="stat-title text-xs">Completion</div>
-                <div className="stat-value text-2xl text-primary">
+              <div className="collapse-title font-semibold flex items-center gap-2">
+                📊 Stats Overview
+                <span className="badge badge-primary badge-sm ml-auto">
                   {Math.round(
                     (skills.length / (skills.length + missingSkills.length)) *
                       100
                   )}
                   %
+                </span>
+              </div>
+
+              <div className="collapse-content">
+                <div className="stats stats-vertical flex justify-evenly shadow bg-base-200 max-h-64 overflow-y-auto rounded-lg">
+                  <div className="stat place-items-center py-3">
+                    <div className="stat-title text-xs">Current Skills</div>
+                    <div className="stat-value text-xl text-success">
+                      {skills.length}
+                    </div>
+                  </div>
+
+                  <div className="stat place-items-center py-3">
+                    <div className="stat-title text-xs">To Learn</div>
+                    <div className="stat-value text-xl text-warning">
+                      {missingSkills.length}
+                    </div>
+                  </div>
+
+                  <div className="stat place-items-center py-3">
+                    <div className="stat-title text-xs">Completion</div>
+                    <div className="stat-value text-xl text-primary">
+                      {Math.round(
+                        (skills.length /
+                          (skills.length + missingSkills.length)) *
+                          100
+                      )}
+                      %
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
