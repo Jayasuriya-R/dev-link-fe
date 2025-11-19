@@ -196,7 +196,7 @@ const ActionItems = () => {
         .trim();
 
       const parsed = JSON.parse(responseText);
-      console.log(parsed);
+      
       setActionData(parsed[0]);
       dispatch(addActionItem(parsed[0]))
     } catch (err) {

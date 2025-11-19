@@ -4,6 +4,7 @@ import { AiMentorPrompt } from "../utils/constants";
 import SkillAnalyse from "./SkillAnalyse";
 import { useSelector } from "react-redux";
 import ActionItems from "./ActionItems";
+import RoadMap from "./RoadMap";
 
 const AiMentor = () => {
   const [messages, setMessages] = useState([
@@ -197,7 +198,7 @@ const AiMentor = () => {
                     <div className="h-full overflow-y-auto">
                       <h3 className="text-xl font-bold mb-4">Road Map</h3>
                       <p className="text-base-content/70">
-                        Your learning roadmap will appear here...
+                        <RoadMap/>
                       </p>
                     </div>
                   )}
