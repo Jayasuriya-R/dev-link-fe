@@ -5,6 +5,8 @@ import ConnectionReducer from "./connectionSlice";
 import RequestReducer from "./requestSlice";
 import aiChatReducer from "./aiChatSlice";
 import skillAnalysisReducer from "./skillAnalyseSlice"
+import ActionItemReducer from "./actionItemSlice"
+
 
 const appStore = configureStore({
     reducer: {
@@ -14,6 +16,7 @@ const appStore = configureStore({
     requests:RequestReducer,
     aiChat:aiChatReducer,
     skillAnalysisData:skillAnalysisReducer,
+    actionItem: ActionItemReducer
   },
 })
 

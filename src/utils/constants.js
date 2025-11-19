@@ -235,6 +235,6 @@ Rules:
 - Difficulty must match the skill complexity.
 - Keep descriptions short (2 sentences max).
 - Resources must be real, high-quality links.
-- ai_tip must be actionable, not generic.
+- ai_tip must be actionable, not generic and must be single line with few words.
 
 `

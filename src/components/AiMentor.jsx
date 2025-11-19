@@ -180,15 +180,15 @@ const AiMentor = () => {
               </div>
 
               {/* Tab Content - Scrollable */}
-              <div className="flex-1 overflow-hidden min-h-0">
+              <div className="flex-1 overflow-y-scroll min-h-0">
                 <div className="h-full p-4">
                   {activeTab === "skills" && (
                     <SkillAnalyse skills={curUser?.skills} />
                   )}
                   {activeTab === "actions" && (
-                    <div className="h-full overflow-y-auto">
+                    <div className="h-full  overflow-y-auto">
                       <h3 className="text-xl font-bold mb-4">Action Items</h3>
-                      <p className="text-base-content/70">
+                      <p className="text-base-content/70 w-full">
                         <ActionItems/>
                       </p>
                     </div>
