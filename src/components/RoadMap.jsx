@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RoadMapPrompt } from "../utils/constants";
 import { Target, Clock, CheckCircle2, AlertCircle, Trophy } from "lucide-react";
+import { addRoadMap } from "../Store/roadMapSlice";
 
 /**
  * PhaseCard Component
@@ -108,6 +109,7 @@ const RoadMap = () => {
   const [roadmap, setRoadMap] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const dispatch = useDispatch()
 
   const curSkills = useSelector(
     (state) => state.auth?.currentUser?.skills || []
@@ -116,11 +118,17 @@ const RoadMap = () => {
     (state) => state.skillAnalysisData?.text?.missingSkills || []
   );
 
+  const roadMapData = useSelector(state => state.roadMap);
+
   const missingSkillsArray = missingSkills.map((s) => s.skill);
 
   useEffect(() => {
     if (curSkills.length > 0 || missingSkillsArray.length > 0) {
-      fetchRoadMapData();
+      if (Object.entries(roadMapData).length === 0) {
+        fetchRoadMapData();
+      } else {
+        setRoadMap(roadMapData);
+      }
     }
   }, []);
 
@@ -176,8 +184,8 @@ const RoadMap = () => {
         .trim();
 
       const parsed = JSON.parse(responseText);
-      console.log("Roadmap data:", parsed);
       setRoadMap(parsed);
+      dispatch(addRoadMap(parsed))
     } catch (err) {
       console.error("Error fetching roadmap:", err);
       setError(err.message);

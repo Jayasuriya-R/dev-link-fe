@@ -84,7 +84,7 @@ const AiMentor = () => {
       <div className="max-w-[1200px] mx-auto  flex flex-col " style={{ height: 'calc(100vh - 2rem)' }}>
         <div className="grid grid-cols-12 gap-4 flex-1 min-h-0">
           {/* Left Column - Chat */}
-          <div className="col-span-7 flex flex-col min-h-0">
+          <div className="col-span-6 flex flex-col min-h-0">
             <div className="card bg-base-300 shadow-sm flex-1 flex flex-col min-h-0">
               {/* Header */}
               <div className="flex space-x-2.5 p-3 border-b-2 border-base-100 bg-base-200 flex-shrink-0">
@@ -144,7 +144,7 @@ const AiMentor = () => {
           </div>
 
           {/* Right Column - Tabs */}
-          <div className="col-span-5 flex flex-col min-h-0">
+          <div className="col-span-6 flex flex-col min-h-0">
             <div className="card bg-base-300 shadow-sm flex-1 flex flex-col min-h-0">
               {/* Tab Headers */}
               <div className="flex border-b-2 p-3 border-base-100 bg-base-200 flex-shrink-0">

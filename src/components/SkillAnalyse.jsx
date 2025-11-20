@@ -117,7 +117,7 @@ const SkillAnalyse = ({ skills }) => {
 
         {/* Greeting Card */}
         {greeting && !isLoading && (
-          <div className="alert bg-gradient-to-r h-20 overflow-y-auto from-primary/10 to-secondary/10 border-primary/20">
+          <div className="alert bg-gradient-to-r  from-primary/10 to-secondary/10 border-primary/20">
             <TrendingUp className="w-5 h-5 text-primary" />
             <div>
               {profession && (

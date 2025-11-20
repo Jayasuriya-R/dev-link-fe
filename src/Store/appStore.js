@@ -6,7 +6,7 @@ import RequestReducer from "./requestSlice";
 import aiChatReducer from "./aiChatSlice";
 import skillAnalysisReducer from "./skillAnalyseSlice"
 import ActionItemReducer from "./actionItemSlice"
-
+import RoadMapReducer from './roadMapSlice'
 
 const appStore = configureStore({
     reducer: {
@@ -16,7 +16,8 @@ const appStore = configureStore({
     requests:RequestReducer,
     aiChat:aiChatReducer,
     skillAnalysisData:skillAnalysisReducer,
-    actionItem: ActionItemReducer
+    actionItem: ActionItemReducer,
+    roadMap:RoadMapReducer
   },
 })
 

@@ -28,7 +28,7 @@ const Body = () => {
         </main>
       </div>
 
-      <footer className="bg-base-100 flex-shrink-0">
+      <footer className="bg-base-100 ">
         <Footer />
       </footer>
     </div>
