@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RoadMapPrompt } from "../utils/constants";
-import { Target, Clock, CheckCircle2, AlertCircle, Trophy } from "lucide-react";
+import { Target, Clock, CheckCircle2, AlertCircle, Trophy, X } from "lucide-react";
 import { addRoadMap } from "../Store/roadMapSlice";
 
 /**
@@ -9,72 +9,112 @@ import { addRoadMap } from "../Store/roadMapSlice";
  * Displays a single phase in the roadmap timeline
  */
 const PhaseCard = ({ phase, index, isEven }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <li>
-      <div className="timeline-middle">
-        <div className="bg-primary text-primary-content rounded-full p-1">
-          <CheckCircle2 className="h-5 w-5" />
-        </div>
-      </div>
-
-      <div
-        className={`${
-          isEven ? "timeline-start md:text-end" : "timeline-end"
-        } mb-10`}
-      >
-        <div className="collapse collapse-arrow bg-base-200 shadow-md">
-          <input type="checked" />
-
-          {/* Collapse Title */}
-          <div className="collapse-title flex items-center text-center gap-2 mb-2">
-            <time className="font-mono italic text-sm font-semibold text-warning">
-              {phase?.title}
-            </time>
+    <>
+      <li>
+        <div className="timeline-middle">
+          <div className="bg-primary text-primary-content rounded-full p-1">
+            <CheckCircle2 className="h-5 w-5" />
           </div>
+        </div>
 
-          {/* Collapse Content */}
-          <div className="collapse-content">
-            <div className="card bg-base-200 text-center shadow-md hover:shadow-lg transition-shadow">
-              <div className="card-body p-2">
-                <h3 className="card-title text-lg flex items-center gap-2">
-                  <Target className="h-5 w-5 text-primary" />
-                  {phase?.phaseTitle}
-                </h3>
+        <div
+          className={`${
+            isEven ? "timeline-start md:text-end" : "timeline-end"
+          } mb-10`}
+        >
+          {/* Card */}
+          <div 
+            onClick={() => setIsOpen(true)}
+            className="card bg-base-200 shadow-md hover:shadow-lg transition-all cursor-pointer hover:scale-[1.02]"
+          >
+            <div className="card-body p-4">
+              <div className="flex items-center gap-2">
+                <time className="font-mono italic text-sm font-semibold text-warning">
+                  {phase?.title}
+                </time>
+              </div>
+              <h3 className="text-lg font-semibold mt-1 flex items-center gap-2">
+                {phase?.phaseTitle}
+              </h3>
+            </div>
+          </div>
+        </div>
 
-                <div className="divider my-2"></div>
+        <hr className="bg-primary/20" />
+      </li>
 
-                {phase?.bullets?.length > 0 && (
-                  <ul className="space-y-2 text-sm">
-                    {phase.bullets.map((bullet, idx) => (
-                      <li key={idx} className="flex items-start gap-2">
-                        <span className="text-primary mt-1">•</span>
-                        <span className="flex-1">{bullet}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
+      {/* Modal */}
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+          <div className="card bg-base-200 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div className="card-body">
+              {/* Header */}
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Target className="h-6 w-6 text-primary" />
+                  <div>
+                    <time className="font-mono italic text-sm font-semibold text-warning block">
+                      {phase?.title}
+                    </time>
+                    <h3 className="text-2xl font-bold mt-1">
+                      {phase?.phaseTitle}
+                    </h3>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setIsOpen(false)}
+                  className="btn btn-sm btn-circle btn-ghost"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
 
-                {phase?.outcome && (
-                  <div className="mt-4 p-3 bg-success/10 rounded-lg border border-success/20">
-                    <div className="flex items-start gap-2">
-                      <Trophy className="h-10 w-10 text-success mt-0.5" />
-                      <div>
-                        <p className="font-semibold text-success text-xs uppercase tracking-wide mb-1">
-                          Outcome
-                        </p>
-                        <p className="text-sm">{phase.outcome}</p>
-                      </div>
+              <div className="divider my-2"></div>
+
+              {/* Bullets */}
+              {phase?.bullets?.length > 0 && (
+                <ul className="space-y-3 text-base mb-6">
+                  {phase.bullets.map((bullet, idx) => (
+                    <li key={idx} className="flex items-start gap-3">
+                      <span className="text-primary mt-1">•</span>
+                      <span className="flex-1">{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              {/* Outcome */}
+              {phase?.outcome && (
+                <div className="p-4 bg-success/10 rounded-lg border border-success/20">
+                  <div className="flex items-start gap-3">
+                    <Trophy className="h-6 w-6 text-success mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="font-semibold text-success text-xs uppercase tracking-wide mb-2">
+                        Outcome
+                      </p>
+                      <p className="text-base">{phase.outcome}</p>
                     </div>
                   </div>
-                )}
+                </div>
+              )}
+
+              {/* Close Button */}
+              <div className="mt-6">
+                <button 
+                  onClick={() => setIsOpen(false)}
+                  className="btn btn-primary w-full"
+                >
+                  Close
+                </button>
               </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <hr className="bg-primary/20" />
-    </li>
+      )}
+    </>
   );
 };
 
