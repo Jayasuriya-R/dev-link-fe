@@ -1,12 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Home, User, Users, UserPlus,Newspaper, MessageCircleHeartIcon, MessageCircleCodeIcon } from "lucide-react";
 import { Bot } from "lucide-react";
-
+import { Sun, Moon } from "lucide-react";
 import { MessageSquare } from "lucide-react";
 
 
 const Sidebar = () => {
+  const [darkTheme, setDarkTheme] = useState(false)
+
+  const handleThemeChange = ()=>{
+    const newTheme = darkTheme ? "charcoallight" : "charcoaldark";
+    
+    document.documentElement.setAttribute("data-theme", newTheme);
+    setDarkTheme(!darkTheme);
+  }
   return (
     <div className="drawer">
       <input id="my-drawer-1" type="checkbox" className="drawer-toggle" />
@@ -71,6 +79,14 @@ const Sidebar = () => {
               <Bot className="w-5 h-5" />
               Ai Mentor
             </Link>
+          </li>
+          <li>
+            <div className="flex items-center gap-3 hover:bg-base-200 rounded-lg p-2" onClick={handleThemeChange}>
+             { darkTheme ?<><Sun className="w-5 h-5" />
+              Light Theme </>  : <><Moon className="w-5 h-5" />
+              Dark Theme </> }
+            </div>
+              
           </li>
         </ul>
       </div>

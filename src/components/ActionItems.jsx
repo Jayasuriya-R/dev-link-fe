@@ -8,6 +8,7 @@ import { addActionItem } from "../Store/actionItemSlice";
 const ActionItemCard = ({ data }) => {
   const [completed, setCompleted] = useState(0);
   const [checkedItems, setCheckedItems] = useState(new Set());
+  
 
   const handleChecked = (e, index) => {
     const newCheckedItems = new Set(checkedItems);
@@ -35,6 +36,7 @@ const ActionItemCard = ({ data }) => {
     return colors[difficulty?.toLowerCase()] || "badge-warning";
   };
 
+  
   return (
     <div className="card w-full max-w-2xl bg-base-100 shadow-lg hover:shadow-xl transition-shadow">
       <div className="card-body">
@@ -134,6 +136,7 @@ const ActionItemCard = ({ data }) => {
 
 const ActionItems = () => {
   const [actionData, setActionData] = useState(null);
+  const [loading, setLoading] = useState(false)
   const dispatch = useDispatch()
   const missingSkills = useSelector(
     (state) => state.skillAnalysisData.text.missingSkills
@@ -156,6 +159,7 @@ const ActionItems = () => {
 
   const actionItems = async () => {
     try {
+      setLoading(true)
       const response = await fetch(
         "https://api.groq.com/openai/v1/chat/completions",
         {
@@ -199,11 +203,25 @@ const ActionItems = () => {
       
       setActionData(parsed[0]);
       dispatch(addActionItem(parsed[0]))
+      setLoading(false)
     } catch (err) {
       console.error("Error fetching skill analysis:", err);
     } finally {
+      setLoading(false)
     }
   };
+
+    if (loading) {
+    return (
+      <div className="flex flex-col justify-center items-center p-12">
+        <span className="loading loading-spinner loading-lg text-primary mb-4"></span>
+        <p className="text-lg font-medium">
+          Generating your personalized Action Items...
+        </p>
+      </div>
+    );
+  }
+
   return <div>{actionData && <ActionItemCard data={actionData} />}</div>;
 };
 

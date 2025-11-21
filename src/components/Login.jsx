@@ -41,7 +41,7 @@ const Login = () => {
   return (
     <>
       <div className="hero bg-base-200 flex flex-col justify-center w-full min-h-[100vh] ">
-        <h1 className="text-4xl  text-center text-white font-mono font-bold">
+        <h1 className="text-4xl  text-center font-mono font-bold">
           Welcome to DevLink⚡
         </h1>
         <div className="hero-content flex-col w-full lg:flex-row-reverse">

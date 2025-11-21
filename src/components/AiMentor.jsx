@@ -81,7 +81,7 @@ const AiMentor = () => {
 
   return (
     <div className="w-full  p-4 bg-base-100">
-      <div className="max-w-[1200px] mx-auto  flex flex-col " style={{ height: 'calc(100vh - 2rem)' }}>
+      <div className="max-w-[1200px] mx-auto z-50 flex flex-col " style={{ height: 'calc(100vh - 6rem)' }}>
         <div className="grid grid-cols-12 gap-4 flex-1 min-h-0">
           {/* Left Column - Chat */}
           <div className="col-span-6 flex flex-col min-h-0">
@@ -149,7 +149,7 @@ const AiMentor = () => {
               {/* Tab Headers */}
               <div className="flex border-b-2 p-3 border-base-100 bg-base-200 flex-shrink-0">
                 <button
-                  className={`flex-1 px-3 py-3 text-sm font-semibold transition-colors ${
+                  className={`flex-1 px-3 py-3 text-sm font-semibold rounded-xl transition-colors ${
                     activeTab === "skills"
                       ? "bg-primary text-primary-content"
                       : "hover:bg-base-100"

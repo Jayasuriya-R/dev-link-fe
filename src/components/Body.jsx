@@ -8,27 +8,28 @@ import TechNews from "./TechNews";
 
 const Body = () => {
   return (
-    <div className="flex flex-col h-screen overflow-hidden">
-      <header className="bg-base-100 shadow-sm flex-shrink-0">
+    <div className="flex flex-col min-h-screen">
+      {/* FIXED NAVBAR */}
+      <header className="bg-base-100 shadow-sm ">
         <Navbar />
       </header>
 
-      <div className="flex flex-1 overflow-hidden">
-        <aside className="flex-shrink-0">
+      {/* Push content below navbar height (adjust if needed) */}
+      <div className="flex flex-1 ">
+        <aside className="flex-shrink-0 mt-4">
           <Sidebar />
         </aside>
 
-        <main className="flex-1 overflow-y-auto p-4 relative">
+        <main className="flex-1 overflow-y-auto ">
           <div className="flex justify-center items-start">
             <Outlet />
           </div>
-          <div >
-            <AiChat/>
-          </div>
+
+          <AiChat />
         </main>
       </div>
 
-      <footer className="bg-base-100 ">
+      <footer className="bg-base-100">
         <Footer />
       </footer>
     </div>
