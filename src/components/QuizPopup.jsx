@@ -38,7 +38,7 @@ const QuizPopup = ({ questions }) => {
   else proficiency = "Advanced 🚀";
 
   return (
-      <div className="bg-neutral w-[500px] p-6 rounded-xl shadow-lg relative">
+      <div className="bg-base-300 w-[500px] p-6 rounded-xl shadow-lg relative">
 
         {/* Close Button */}
         <button

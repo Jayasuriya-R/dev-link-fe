@@ -159,7 +159,7 @@ const AiMentor = () => {
                   Skill Analysis
                 </button>
                 <button
-                  className={`flex-1 px-3 py-3 text-sm font-semibold transition-colors ${
+                  className={`flex-1 px-3 py-3 text-sm font-semibold rounded-xl transition-colors ${
                     activeTab === "actions"
                       ? "bg-primary text-primary-content"
                       : "hover:bg-base-100"
@@ -169,7 +169,7 @@ const AiMentor = () => {
                   Action Items
                 </button>
                 <button
-                  className={`flex-1 px-3 py-3 text-sm font-semibold transition-colors ${
+                  className={`flex-1 px-3 py-3 text-sm font-semibold rounded-xl transition-colors ${
                     activeTab === "roadmap"
                       ? "bg-primary text-primary-content"
                       : "hover:bg-base-100"

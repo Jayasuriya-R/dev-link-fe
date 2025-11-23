@@ -65,7 +65,7 @@ const Navbar = () => {
 
         {/* Add TechNews Bell Icon Here */}
         <TechNews />
-
+         
         <div className="dropdown dropdown-end mr-2">
           <div
             tabIndex={0}
