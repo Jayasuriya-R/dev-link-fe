@@ -5,6 +5,7 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { Base_URL } from "../utils/constants";
+import BlurText from "../UI/BlurText";
 
 const SingUp = () => {
   const dispatch = useDispatch();
@@ -105,9 +106,13 @@ const handleSignUp = async () => {
 
   return (
     <div className="hero bg-base-200 flex flex-col justify-center w-full min-h-[100vh]">
-      <h1 className="text-4xl text-white font-mono font-bold text-center mb-8">
-        Welcome to DevLink ⚡
-      </h1>
+     <BlurText
+          text="Welcome to DevLink⚡"
+          delay={150}
+          animateBy="words"
+          direction="top"
+          className="text-4xl text-center font-bold"
+        />
 
       <div className="hero-content w-full max-w-4xl">
         <div className="card bg-base-100 w-full shadow-2xl">

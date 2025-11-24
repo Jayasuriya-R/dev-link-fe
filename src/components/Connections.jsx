@@ -5,6 +5,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Base_URL } from "../utils/constants";
 import { useNavigate } from "react-router-dom";
+import BlurText from "../UI/BlurText";
 
 const Connections = () => {
   useEffect(() => {
@@ -31,9 +32,9 @@ const Connections = () => {
     }
   };
 
-  const handleMessageClick = (id) =>{
-    navigate(`/message/${id}`)
-  }
+  const handleMessageClick = (id) => {
+    navigate(`/message/${id}`);
+  };
 
   if (!connections) return;
   if (connections.length === 0) {
@@ -45,8 +46,16 @@ const Connections = () => {
   }
 
   return (
-     <div className="w-full px-4 sm:px-6 lg:px-8 mt-2">
-      <h1 className="text-3xl font-bold font-mono text-center mb-4 text-purple-700 tracking-wide">My Connections</h1>
+    <div className="w-full px-4 sm:px-6 lg:px-8 mt-2">
+      <h1 className="flex justify-center">
+        <BlurText
+          text="My Connections"
+          delay={150}
+          animateBy="words"
+          direction="top"
+          className="text-3xl font-bold font-mono  mb-4 text-purple-700 tracking-wide"
+        />
+      </h1>
       <div className="max-w-7xl mx-auto flex flex-col gap-4 ">
         {connections && connections.length > 0 ? (
           connections.map((connection) => {
@@ -80,7 +89,7 @@ const Connections = () => {
                       <button
                         className="btn btn-ghost bg-base-100 btn-sm sm:btn-md btn-circle "
                         aria-label="Send message"
-                        onClick={()=>handleMessageClick(connection._id)}
+                        onClick={() => handleMessageClick(connection._id)}
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -123,7 +132,13 @@ const Connections = () => {
           })
         ) : (
           <div className="text-center text-gray-500 py-8">
-            <p className="text-sm sm:text-base">No connections found.</p>
+            <BlurText
+              text="No connections found."
+              delay={150}
+              animateBy="words"
+              direction="top"
+              className="text-2xl text-center font-bold"
+            />
           </div>
         )}
       </div>

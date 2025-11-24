@@ -5,6 +5,7 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { Base_URL } from "../utils/constants";
+import BlurText from "../UI/BlurText";
 
 const Login = () => {
   const [emailId, setEmail] = React.useState("");
@@ -15,7 +16,6 @@ const Login = () => {
   const handleLogin = async () => {
     dispatch(setLoading(true));
     try {
-      
       const response = await axios.post(
         Base_URL + "/login",
         {
@@ -28,9 +28,9 @@ const Login = () => {
       );
       navigate("/feed");
       console.log("Login successful:", response.data);
-      toast.success("Login successful!"); 
+      toast.success("Login successful!");
       dispatch(addCurrentUser(response.data.data));
-     dispatch(setLoading(false));
+      dispatch(setLoading(false));
     } catch (err) {
       console.log("Login error:", err);
       toast.error("Login failed. Please check your credentials.");
@@ -41,9 +41,14 @@ const Login = () => {
   return (
     <>
       <div className="hero bg-base-200 flex flex-col justify-center w-full min-h-[100vh] ">
-        <h1 className="text-4xl  text-center font-mono font-bold">
-          Welcome to DevLink⚡
-        </h1>
+        <BlurText
+          text="Welcome to DevLink⚡"
+          delay={150}
+          animateBy="words"
+          direction="top"
+          className="text-4xl text-center font-bold"
+        />
+
         <div className="hero-content flex-col w-full lg:flex-row-reverse">
           <div className="card bg-base-100 md:w-3/12  max-w-xl shrink-0 shadow-2xl">
             <div className="card-body">

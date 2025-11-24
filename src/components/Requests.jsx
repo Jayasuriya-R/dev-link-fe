@@ -6,6 +6,7 @@ import { setConnections } from "../Store/connectionSlice";
 import UserRequest from "./UserRequest";
 import { setLoading } from "../Store/authSlice";
 import { setRequests } from "../Store/requestSlice";
+import BlurText from "../UI/BlurText";
 
 const Connections = () => {
   useEffect(() => {
@@ -34,9 +35,13 @@ const Connections = () => {
   if (!requests) return;
   if (requests.length === 0) {
     return (
-      <h1 className="text-2xl font-semibold font-mono text-center mt-4">
-        No Requests Found{" "}
-      </h1>
+      <BlurText
+        text=" No Requests Found"
+        delay={150}
+        animateBy="words"
+        direction="top"
+        className="text-2xl text-center font-bold mt-8  text-purple-700 tracking-wide"
+      />
     );
   }
 
@@ -48,14 +53,7 @@ const Connections = () => {
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 p-4">
           {requests.map((request) => {
-            return (
-              request && (
-                <UserRequest
-                  key={request._id}
-                  user={request}
-                />
-              )
-            );
+            return request && <UserRequest key={request._id} user={request} />;
           })}
         </div>
       </div>
