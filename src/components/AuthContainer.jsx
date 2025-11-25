@@ -7,6 +7,7 @@ const AuthContainer = () => {
     const loggedIn = useSelector((state) => state.auth.isLoggedIn);
   return (
     <>
+    
    { loggedIn ? <Login /> : <SingUp />}
     </>
   )

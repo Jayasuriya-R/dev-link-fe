@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axois from "axios";
 import { Base_URL } from "../utils/constants";
 import { Link, useNavigate } from "react-router-dom";
-import { addCurrentUser } from "../Store/authSlice";
+import { addCurrentUser, setLoading } from "../Store/authSlice";
 import { removeFeed } from "../Store/feedSlice";
 import TechNews from "./TechNews";
 
@@ -12,6 +12,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleLogout = async () => {
+    dispatch(setLoading(true));
     try {
       const response = await axois.post(
         Base_URL + "/logout",
@@ -22,8 +23,11 @@ const Navbar = () => {
       dispatch(addCurrentUser(null));
       dispatch(removeFeed([]));
       navigate("/login");
+      dispatch(setLoading(false));
     } catch (err) {
       console.log("Logout error:", err);
+    }finally{
+      dispatch(setLoading(false));
     }
   };
 

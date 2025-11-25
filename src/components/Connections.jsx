@@ -39,8 +39,14 @@ const Connections = () => {
   if (!connections) return;
   if (connections.length === 0) {
     return (
-      <h1 className="text-2xl font-semibold font-mono text-center mt-4">
-        No Connections Found{" "}
+      <h1 className="">
+         <BlurText
+          text="No Connections Found"
+          delay={150}
+          animateBy="words"
+          direction="top"
+          className="text-3xl font-bold mt-8 text-purple-700 tracking-wide"
+        />
       </h1>
     );
   }
