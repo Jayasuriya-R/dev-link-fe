@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axois from "axios";
 import { Base_URL } from "../utils/constants";
@@ -9,6 +9,7 @@ import TechNews from "./TechNews";
 
 const Navbar = () => {
   const currentUser = useSelector((state) => state.auth.currentUser);
+  const darkTheme = useSelector((state) => state.auth.isDarkTheme);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleLogout = async () => {
@@ -26,10 +27,12 @@ const Navbar = () => {
       dispatch(setLoading(false));
     } catch (err) {
       console.log("Logout error:", err);
-    }finally{
+    } finally {
       dispatch(setLoading(false));
     }
   };
+
+   
 
   return (
     <div className="navbar bg-base-200 shadow-sm">
@@ -66,10 +69,11 @@ const Navbar = () => {
         <div className="hidden md:block text-lg font-semibold">
           Welcome {currentUser?.firstName} 🙋‍♂️
         </div>
+       
 
         {/* Add TechNews Bell Icon Here */}
         <TechNews />
-         
+
         <div className="dropdown dropdown-end mr-2">
           <div
             tabIndex={0}

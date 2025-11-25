@@ -7,7 +7,8 @@ const authSlice = createSlice({
         isLoggedIn: true,
         currentUser: null,
         isLoading: false,
-        isEditable: false
+        isEditable: false,
+        isDarkTheme: false,
     },
     reducers: {
         signUpUser:(state)=>{
@@ -25,9 +26,12 @@ const authSlice = createSlice({
         },
         setEditable:(state,action)=>{
             state.isEditable=action.payload;
+        },
+        changeTheme:(state,action) =>{
+            state.isDarkTheme=action.payload;
         }     
     }
 })
 
-export const {signUpUser,loginUser,addCurrentUser,setLoading,setEditable} = authSlice.actions;
+export const {signUpUser,loginUser,addCurrentUser,setLoading,setEditable,changeTheme} = authSlice.actions;
 export default authSlice.reducer;

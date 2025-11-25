@@ -4,16 +4,19 @@ import { Home, User, Users, UserPlus,Newspaper, MessageCircleHeartIcon, MessageC
 import { Bot } from "lucide-react";
 import { Sun, Moon } from "lucide-react";
 import { MessageSquare } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { changeTheme } from "../Store/authSlice";
 
 
 const Sidebar = () => {
-  const [darkTheme, setDarkTheme] = useState(false)
+  const dispatch = useDispatch();
+  const darkTheme = useSelector((state) => state.auth.isDarkTheme);
 
   const handleThemeChange = ()=>{
     const newTheme = darkTheme ? "charcoallight" : "charcoaldark";
     
     document.documentElement.setAttribute("data-theme", newTheme);
-    setDarkTheme(!darkTheme);
+    dispatch(changeTheme(!darkTheme))
   }
   return (
     <div className="drawer">
