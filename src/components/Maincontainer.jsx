@@ -29,6 +29,12 @@ const Maincontainer = () => {
       navigate("/login");
     }
   };
+  const darkTheme = useSelector((state) => state.auth.isDarkTheme);
+    useEffect(() => {
+      const newTheme = darkTheme ? "charcoallight" : "charcoaldark";
+  
+      document.documentElement.setAttribute("data-theme", newTheme);
+    }, [darkTheme]);
 
   return (
    <>

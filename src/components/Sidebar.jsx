@@ -1,23 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Home, User, Users, UserPlus,Newspaper, MessageCircleHeartIcon, MessageCircleCodeIcon } from "lucide-react";
+import {
+  Home,
+  User,
+  Users,
+  UserPlus,
+  Newspaper,
+  MessageCircleHeartIcon,
+  MessageCircleCodeIcon,
+} from "lucide-react";
 import { Bot } from "lucide-react";
 import { Sun, Moon } from "lucide-react";
 import { MessageSquare } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { changeTheme } from "../Store/authSlice";
 
-
 const Sidebar = () => {
   const dispatch = useDispatch();
   const darkTheme = useSelector((state) => state.auth.isDarkTheme);
 
-  const handleThemeChange = ()=>{
-    const newTheme = darkTheme ? "charcoallight" : "charcoaldark";
-    
-    document.documentElement.setAttribute("data-theme", newTheme);
-    dispatch(changeTheme(!darkTheme))
-  }
+  const handleThemeChange = () => {
+    dispatch(changeTheme(!darkTheme));
+  };
   return (
     <div className="drawer">
       <input id="my-drawer-1" type="checkbox" className="drawer-toggle" />
@@ -84,12 +88,22 @@ const Sidebar = () => {
             </Link>
           </li>
           <li>
-            <div className="flex items-center gap-3 hover:bg-base-200 rounded-lg p-2" onClick={handleThemeChange}>
-             { darkTheme ?<><Sun className="w-5 h-5" />
-              Light Theme </>  : <><Moon className="w-5 h-5" />
-              Dark Theme </> }
+            <div
+              className="flex items-center gap-3 hover:bg-base-200 rounded-lg p-2"
+              onClick={handleThemeChange}
+            >
+              {!darkTheme ? (
+                <>
+                  <Sun className="w-5 h-5" />
+                  Light Theme{" "}
+                </>
+              ) : (
+                <>
+                  <Moon className="w-5 h-5" />
+                  Dark Theme{" "}
+                </>
+              )}
             </div>
-              
           </li>
         </ul>
       </div>
