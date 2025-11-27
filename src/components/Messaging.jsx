@@ -12,6 +12,10 @@ import {
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { createSocketConnection } from "../utils/socket";
+import { setLoading } from "../Store/authSlice";
+import { Base_URL } from "../utils/constants";
+import { setConnections } from "../Store/connectionSlice";
+import EmojiPicker from "emoji-picker-react";
 
 const Messaging = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -21,6 +25,7 @@ const Messaging = () => {
   const [showSidebar, setShowSidebar] = useState(true);
   const params = useParams();
   const socketRef = useRef(null);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const currentUser = useSelector((state) => state.auth.currentUser);
   const connection = useSelector((state) => state.connection);
@@ -35,6 +40,12 @@ const Messaging = () => {
   }, [targetChat]);
 
   useEffect(() => {
+    if (connection.length === 0) {
+      fetchConnections();
+    }
+  },[]);
+
+  useEffect(() => {
     if (!currentUserId) {
       console.log("❌ No currentUserId, skipping socket connection");
       return;
@@ -47,7 +58,7 @@ const Messaging = () => {
     // Listen for connection events
     socket.on("connect", () => {
       console.log("✅ Socket connected with ID:", socket.id);
-      
+
       // Register user with their ID
       socket.emit("register", { userId: currentUserId });
       console.log("📝 Registered user:", currentUserId);
@@ -63,9 +74,9 @@ const Messaging = () => {
         text: newMsg.text,
         from: firstName,
         senderId: senderId,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
-      
+
       // Add message to the correct chat using senderId
       setMessages((prev) => {
         const updated = {
@@ -103,7 +114,7 @@ const Messaging = () => {
         from: currentUserId,
         to: selectedChat._id,
         text: newMsg.text,
-        socketConnected: socketRef.current.connected
+        socketConnected: socketRef.current.connected,
       });
 
       // Emit message using the stored socket reference
@@ -119,14 +130,14 @@ const Messaging = () => {
         ...prev,
         [selectedChat._id]: [...(prev[selectedChat._id] || []), newMsg],
       }));
-      
+
       setMessage("");
     } else {
       console.warn("⚠️ Cannot send message:", {
         hasMessage: !!message.trim(),
         hasSelectedChat: !!selectedChat,
         hasSocket: !!socketRef.current,
-        socketConnected: socketRef.current?.connected
+        socketConnected: socketRef.current?.connected,
       });
     }
   };
@@ -140,6 +151,22 @@ const Messaging = () => {
   const handleBackToList = () => {
     setShowSidebar(true);
     setSelectedChat(null);
+  };
+
+  const fetchConnections = async () => {
+    dispatch(setLoading(true));
+    try {
+      const response = await axios.get(Base_URL + "/user/connection", {
+        withCredentials: true,
+      });
+      console.log("Connections fetched:", response.data);
+      dispatch(setConnections(response.data.data));
+      dispatch(setLoading(false));
+    } catch (err) {
+      console.log("Error fetching connections:", err);
+    } finally {
+      dispatch(setLoading(false));
+    }
   };
 
   const filteredConnections = connection.filter(
@@ -170,7 +197,6 @@ const Messaging = () => {
               <h1 className="font-semibold text-gray-900 text-sm md:text-base">
                 {currentUser?.firstName} {currentUser?.lastName}
               </h1>
-              
             </div>
             <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
               <MoreVertical className="w-5 h-5 text-gray-600" />
@@ -217,11 +243,13 @@ const Messaging = () => {
                     {con?.firstName} {con?.lastName}
                   </h2>
                   <span className="text-xs text-gray-500 ml-2">
-                    {messages[con._id]?.[messages[con._id].length - 1]?.time || ""}
+                    {messages[con._id]?.[messages[con._id].length - 1]?.time ||
+                      ""}
                   </span>
                 </div>
                 <p className="text-xs md:text-sm text-gray-600 truncate">
-                  {messages[con._id]?.[messages[con._id].length - 1]?.text || "Start chatting..."}
+                  {messages[con._id]?.[messages[con._id].length - 1]?.text ||
+                    "Start chatting..."}
                 </p>
               </div>
               {con.unread > 0 && (
@@ -268,7 +296,6 @@ const Messaging = () => {
                     <h2 className="font-semibold text-sm md:text-base text-gray-900">
                       {selectedChat?.firstName} {selectedChat?.lastName}
                     </h2>
-                    
                   </div>
                 </div>
                 <div className="flex gap-1 md:gap-2">
@@ -327,13 +354,29 @@ const Messaging = () => {
 
             {/* Message Input */}
             <div className="bg-white border-t border-gray-200 p-3 md:p-4">
-              <div className="flex items-center gap-2 md:gap-3">
+              <div className="flex items-center gap-2 md:gap-3 relative">
                 <button className="p-2 hover:bg-gray-100 rounded-full transition-colors hidden sm:flex">
                   <Paperclip className="w-4 h-4 md:w-5 md:h-5 text-gray-600" />
                 </button>
                 <button className="p-2 hover:bg-gray-100 rounded-full transition-colors hidden sm:flex">
-                  <Smile className="w-4 h-4 md:w-5 md:h-5 text-gray-600" />
+                  <Smile
+                    className="w-4 h-4 md:w-5 md:h-5 text-gray-600"
+                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                  />
                 </button>
+                {showEmojiPicker && (
+                  <div className="absolute bottom-10 left-0 z-50">
+                    <EmojiPicker
+                      onEmojiClick={(emojiObject) =>
+                        setMessage((prev) => prev + emojiObject.emoji)
+                      }
+                      style={{
+                        height: "350px",
+                        width: "350px",
+                      }}
+                    />
+                  </div>
+                )}
                 <input
                   type="text"
                   placeholder="Type a message..."
