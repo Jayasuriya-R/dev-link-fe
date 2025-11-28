@@ -3,8 +3,7 @@ import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import Footer from "./Footer";
 import { Outlet } from "react-router-dom";
-import AiChat from "./AiChat";
-import TechNews from "./TechNews";
+
 
 const Body = () => {
   return (
@@ -25,7 +24,7 @@ const Body = () => {
             <Outlet />
           </div>
 
-          <AiChat />
+          
         </main>
       </div>
 

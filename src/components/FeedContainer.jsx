@@ -6,6 +6,7 @@ import { setLoading } from "../Store/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
 import { addFeed } from "../Store/feedSlice";
+import AiChat from "./AiChat";
 
 const FeedContainer = () => {
   const [moveFeed, setMoveFeed] = useState(0);
@@ -62,6 +63,7 @@ const FeedContainer = () => {
           </motion.div>
         )}
       </AnimatePresence>
+      <AiChat />
     </div>
   );
 };
