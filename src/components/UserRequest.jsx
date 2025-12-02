@@ -1,14 +1,17 @@
 import React from "react";
 import { Base_URL } from "../utils/constants";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../Store/authSlice";
 import { updateRequest } from "../Store/requestSlice";
+import { sendEmail } from "../utils/email";
+import { connectionAcceptedEmail } from "../utils/emailTemplates";
 
 const UserRequest = ({ user }) => {
   const dispatch = useDispatch();
+  const acceptedByName = useSelector((state) => state.auth.currentUser?.firstName);
   const dialogId = `modal_${user.fromUserId._id}`;
-  const { firstName, lastName, photoUrl, skills, shortDescription } =
+  const { firstName, lastName, photoUrl, skills, shortDescription, emailId } =
     user.fromUserId;
 
   const handleRequest = async (status) => {
@@ -22,6 +25,9 @@ const UserRequest = ({ user }) => {
       console.log("Request reviewed:", response.data);
       dispatch(setLoading(false));
       dispatch(updateRequest(user._id));
+      if (status === "accepted") {
+        sendEmail(emailId, "Your connection request has been accepted! ⚡", connectionAcceptedEmail(firstName,acceptedByName));
+      }
     } catch (err) {
       console.log("Error reviewing request:", err);
     } finally {

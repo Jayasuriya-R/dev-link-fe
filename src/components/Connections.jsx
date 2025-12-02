@@ -15,14 +15,14 @@ const Connections = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const connections = useSelector((state) => state.connection);
-  console.log("Connections from store:", connections);
+  
   const fetchConnections = async () => {
     dispatch(setLoading(true));
     try {
       const response = await axios.get(Base_URL + "/user/connection", {
         withCredentials: true,
       });
-      console.log("Connections fetched:", response.data);
+     
       dispatch(setConnections(response.data.data));
       dispatch(setLoading(false));
     } catch (err) {

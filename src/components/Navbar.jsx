@@ -6,6 +6,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { addCurrentUser, setLoading } from "../Store/authSlice";
 import { removeFeed } from "../Store/feedSlice";
 import TechNews from "./TechNews";
+import axios from "axios";
+import { sendEmail } from "../utils/email";
 
 const Navbar = () => {
   const currentUser = useSelector((state) => state.auth.currentUser);
@@ -32,7 +34,8 @@ const Navbar = () => {
     }
   };
 
-   
+ 
+ 
 
   return (
     <div className="navbar bg-base-200 shadow-sm">

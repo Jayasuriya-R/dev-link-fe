@@ -1,9 +1,13 @@
-import React from "react";
+import React, { use } from "react";
 import { Base_URL } from "../utils/constants";
 import axios from "axios";
+import { sendEmail } from "../utils/email";
+import { connectionRequestEmail } from "../utils/emailTemplates";
+import { useSelector } from "react-redux";
 
 const UserCard = ({ feedData, setMoveFeed }) => {
   const [popupMessage, setPopupMessage] = React.useState(null);
+  const curUser = useSelector((state) => state.auth.currentUser); 
 
   const handleLike = async (status) => {
     try {
@@ -18,6 +22,11 @@ const UserCard = ({ feedData, setMoveFeed }) => {
         setPopupMessage(null);
         setMoveFeed((prev) => prev + 1);
       }, 1000);
+      sendEmail(
+        feedData.emailId,
+        "Someone wants to connect with you on DevLink! ⚡",
+        connectionRequestEmail(feedData.firstName,curUser?.firstName)
+      );
     } catch (err) {
       console.error("Error liking profile:", err);
     }

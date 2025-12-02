@@ -24,7 +24,7 @@ const FeedContainer = () => {
       const response = await axios.get(`${Base_URL}/feed`, {
         withCredentials: true,
       });
-      console.log("Feed users fetched:", response.data);
+      
       
       dispatch(addFeed(response.data.data));
     } catch (err) {

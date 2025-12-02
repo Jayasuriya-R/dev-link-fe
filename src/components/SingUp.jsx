@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { loginUser } from "../Store/authSlice";
+import { loginUser, setLoading } from "../Store/authSlice";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { Base_URL } from "../utils/constants";
 import BlurText from "../UI/BlurText";
+import { sendEmail } from "../utils/email";
+import { welcomeEmail } from "../utils/emailTemplates";
 
 const SingUp = () => {
   const dispatch = useDispatch();
@@ -62,57 +64,62 @@ const SingUp = () => {
     setSkills(skills.filter((skill) => skill !== skillToRemove));
   };
 
-const handleSignUp = async () => {
-  try {
-    // ✅ Create FormData instead of regular object
-    const formData = new FormData()
-    
-    // Append all fields
-    formData.append('firstName', firstName);
-    formData.append('lastName', lastName);
-    formData.append('emailId', emailId);
-    formData.append('password', password);
-    formData.append('age', age);
-    formData.append('gender', gender);
-    formData.append('shortDescription', bio);
-    formData.append('skills', JSON.stringify(skills));
-    
-    // ✅ Append image file - MUST be named 'photo' to match backend
-    if (profileImage) {
-      formData.append('photo', profileImage);
-    }
+  const handleSignUp = async () => {
+    dispatch(setLoading(true))
+    try {
+      // ✅ Create FormData instead of regular object
+      const formData = new FormData();
 
-    const response = await axios.post(
-      Base_URL + "/signup",
-      formData, // ✅ Send FormData, not regular object
-      {
-        withCredentials: true,
-        headers: {
-          'Content-Type': 'multipart/form-data' // ✅ Important!
-        }
+      // Append all fields
+      formData.append("firstName", firstName);
+      formData.append("lastName", lastName);
+      formData.append("emailId", emailId);
+      formData.append("password", password);
+      formData.append("age", age);
+      formData.append("gender", gender);
+      formData.append("shortDescription", bio);
+      formData.append("skills", JSON.stringify(skills));
+
+      // ✅ Append image file - MUST be named 'photo' to match backend
+      if (profileImage) {
+        formData.append("photo", profileImage);
       }
-    );
-    
-    console.log("SignUp successful:", response.data);
-    toast.success("SignUp successful!");
-    navigate("/feed");
-    dispatch(loginUser())
-    
-  } catch (err) {
-    console.log("SignUp error:", err);
-    toast.error( "SignUp failed. Please try again.");
-  }
-};
+
+      const response = await axios.post(
+        Base_URL + "/signup",
+        formData, // ✅ Send FormData, not regular object
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data", // ✅ Important!
+          },
+        }
+      );
+
+      console.log("SignUp successful:", response.data);
+      toast.success("SignUp successful!");
+      navigate("/feed");
+      dispatch(loginUser());
+      sendEmail(emailId, "Welcome to DevLink⚡",  welcomeEmail(firstName));
+      dispatch(setLoading(false))
+    } catch (err) {
+      console.log("SignUp error:", err);
+      toast.error("SignUp failed. Please try again.");
+      dispatch(setLoading(false))
+    }
+  };
+
+ 
 
   return (
     <div className="hero bg-base-200 flex flex-col justify-center w-full min-h-[100vh]">
-     <BlurText
-          text="Welcome to DevLink⚡"
-          delay={150}
-          animateBy="words"
-          direction="top"
-          className="text-4xl text-center font-bold"
-        />
+      <BlurText
+        text="Welcome to DevLink⚡"
+        delay={150}
+        animateBy="words"
+        direction="top"
+        className="text-4xl text-center font-bold"
+      />
 
       <div className="hero-content w-full max-w-4xl">
         <div className="card bg-base-100 w-full shadow-2xl">
