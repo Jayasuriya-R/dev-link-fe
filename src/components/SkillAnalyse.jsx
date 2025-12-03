@@ -144,7 +144,7 @@ const SkillAnalyse = ({ skills }) => {
                 skills.map((skill, index) => (
                   <div
                     key={index}
-                    className="badge badge-lg badge-success gap-2"
+                    className="badge lg:badge-lg badge:sm badge-success gap-2"
                   >
                     <CheckCircle2 className="w-3 h-3" />
                     {skill}
@@ -163,11 +163,11 @@ const SkillAnalyse = ({ skills }) => {
         {!isLoading && (
           <div className="collapse collapse-arrow bg-base-300 border border-base-200 shadow-sm hover:shadow-md transition-shadow">
             <input type="radio" name="skills-accordion" />
-            <div className="collapse-title font-semibold flex items-center gap-2">
+            <div className="collapse-title  font-semibold flex items-center gap-2">
               <AlertCircle className="w-5 h-5 text-warning" />
               Skills to Level Up
               {missingSkills.length > 0 && (
-                <span className="badge badge-warning badge-sm ml-auto">
+                <span className="badge badge-warning lg:badge-sm badge-xs ml-auto">
                   {missingSkills.length} recommended
                 </span>
               )}

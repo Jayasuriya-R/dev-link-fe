@@ -16,7 +16,7 @@ const AiMentor = () => {
   ]);
   const [chat, setChat] = useState("");
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState("skills");
+  const [activeTab, setActiveTab] = useState("chat");
   const curUser = useSelector((state) => state.auth.currentUser);
 
   const handleSend = () => {
@@ -80,11 +80,58 @@ const AiMentor = () => {
   };
 
   return (
-    <div className="w-full  p-4 bg-base-100">
-      <div className="max-w-[1200px] mx-auto z-50 flex flex-col " style={{ height: 'calc(100vh - 6rem)' }}>
-        <div className="grid grid-cols-12 gap-4 flex-1 min-h-0">
+    <div className="w-full p-4 bg-base-100">
+      <div className="max-w-[1200px] mx-auto z-50 flex flex-col" style={{ height: 'calc(100vh - 6rem)' }}>
+        <div className="lg:hidden mb-4">
+          <div className="card bg-base-300 shadow-sm">
+            <div className="flex border-b-2 p-3 border-base-100 bg-base-200">
+              <button
+                className={`flex-1 px-2 py-3 text-xs font-semibold rounded-xl transition-colors ${
+                  activeTab === "chat"
+                    ? "bg-primary text-primary-content"
+                    : "hover:bg-base-100"
+                }`}
+                onClick={() => setActiveTab("chat")}
+              >
+                Chat
+              </button>
+              <button
+                className={`flex-1 px-2 py-3 text-xs font-semibold rounded-xl transition-colors ${
+                  activeTab === "skills"
+                    ? "bg-primary text-primary-content"
+                    : "hover:bg-base-100"
+                }`}
+                onClick={() => setActiveTab("skills")}
+              >
+                Skills
+              </button>
+              <button
+                className={`flex-1 px-2 py-3 text-xs font-semibold rounded-xl transition-colors ${
+                  activeTab === "actions"
+                    ? "bg-primary text-primary-content"
+                    : "hover:bg-base-100"
+                }`}
+                onClick={() => setActiveTab("actions")}
+              >
+                Actions
+              </button>
+              <button
+                className={`flex-1 px-2 py-3 text-xs font-semibold rounded-xl transition-colors ${
+                  activeTab === "roadmap"
+                    ? "bg-primary text-primary-content"
+                    : "hover:bg-base-100"
+                }`}
+                onClick={() => setActiveTab("roadmap")}
+              >
+                Roadmap
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 min-h-0">
           {/* Left Column - Chat */}
-          <div className="col-span-6 flex flex-col min-h-0">
+          <div className={`lg:col-span-6 flex flex-col min-h-0 ${activeTab !== "chat" ? "hidden lg:flex" : ""}`}>
             <div className="card bg-base-300 shadow-sm flex-1 flex flex-col min-h-0">
               {/* Header */}
               <div className="flex space-x-2.5 p-3 border-b-2 border-base-100 bg-base-200 flex-shrink-0">
@@ -144,10 +191,10 @@ const AiMentor = () => {
           </div>
 
           {/* Right Column - Tabs */}
-          <div className="col-span-6 flex flex-col min-h-0">
+          <div className={`lg:col-span-6 flex flex-col min-h-0 ${activeTab === "chat" ? "hidden lg:flex" : ""}`}>
             <div className="card bg-base-300 shadow-sm flex-1 flex flex-col min-h-0">
-              {/* Tab Headers */}
-              <div className="flex border-b-2 p-3 border-base-100 bg-base-200 flex-shrink-0">
+              {/* Tab Headers - Only visible on desktop */}
+              <div className="hidden lg:flex border-b-2 p-3 border-base-100 bg-base-200 flex-shrink-0">
                 <button
                   className={`flex-1 px-3 py-3 text-sm font-semibold rounded-xl transition-colors ${
                     activeTab === "skills"
@@ -187,7 +234,7 @@ const AiMentor = () => {
                     <SkillAnalyse skills={curUser?.skills} />
                   )}
                   {activeTab === "actions" && (
-                    <div className="h-full  overflow-y-auto">
+                    <div className="h-full overflow-y-auto">
                       <h3 className="text-xl font-bold mb-4">Action Items</h3>
                       <p className="text-base-content/70 w-full">
                         <ActionItems/>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RoadMapPrompt } from "../utils/constants";
-import { Target, Clock, CheckCircle2, AlertCircle, Trophy, X } from "lucide-react";
+import { Target, Clock, CheckCircle2, AlertCircle, Trophy, X, AlarmClockCheck } from "lucide-react";
 import { addRoadMap } from "../Store/roadMapSlice";
 
 /**
@@ -126,8 +126,8 @@ const RoadMapHeader = ({ role, description }) => {
   return (
     <div className="card bg-base-100 shadow-lg mb-8">
       <div className="card-body">
-        <h2 className="card-title text-2xl text-center font-bold flex items-center gap-2">
-          <Target className="h-8 w-8 text-primary" />
+        <h2 className="card-title lg:text-2xl text-lg text-center font-bold flex items-center gap-2">
+          <AlarmClockCheck className="w-5 h-5 text-primary" />
           {role || "Your Learning Path"}
         </h2>
         {description && (

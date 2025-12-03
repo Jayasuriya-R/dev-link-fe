@@ -9,13 +9,14 @@ import {
   Smile,
   ArrowLeft,
 } from "lucide-react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { createSocketConnection } from "../utils/socket";
 import { setLoading } from "../Store/authSlice";
 import { Base_URL } from "../utils/constants";
 import { setConnections } from "../Store/connectionSlice";
 import EmojiPicker from "emoji-picker-react";
+import axios from "axios";
 
 const Messaging = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -24,6 +25,7 @@ const Messaging = () => {
   const [messages, setMessages] = useState({});
   const [showSidebar, setShowSidebar] = useState(true);
   const params = useParams();
+  const dispatch = useDispatch()
   const socketRef = useRef(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
@@ -40,6 +42,7 @@ const Messaging = () => {
   }, [targetChat]);
 
   useEffect(() => {
+    console.log("length",connection.length)
     if (connection.length === 0) {
       fetchConnections();
     }

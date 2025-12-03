@@ -42,8 +42,8 @@ const ActionItemCard = ({ data }) => {
       <div className="card-body">
         {/* Header */}
         <div className="flex justify-between items-start gap-4 mb-2">
-          <h2 className="text-2xl font-bold flex-1">{data.title}</h2>
-          <span className={`badge ${getDifficultyColor(data.difficulty)} badge-lg`}>
+          <h2 className="lg:text-2xl text-lg  font-bold flex-1">{data.title}</h2>
+          <span className={`badge ${getDifficultyColor(data.difficulty)} lg:badge-lg badge-sm`}>
             {data.difficulty}
           </span>
         </div>
