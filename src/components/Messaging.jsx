@@ -25,7 +25,7 @@ const Messaging = () => {
   const [messages, setMessages] = useState({});
   const [showSidebar, setShowSidebar] = useState(true);
   const params = useParams();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const socketRef = useRef(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
@@ -42,11 +42,11 @@ const Messaging = () => {
   }, [targetChat]);
 
   useEffect(() => {
-    console.log("length",connection.length)
+    console.log("length", connection.length);
     if (connection.length === 0) {
       fetchConnections();
     }
-  },[]);
+  }, []);
 
   useEffect(() => {
     if (!currentUserId) {
@@ -100,8 +100,8 @@ const Messaging = () => {
       socket.off("connect_error");
       socket.disconnect();
     };
-  }, [currentUserId]); // Only depend on currentUserId, not targetUserId
-
+  }, [currentUserId]); 
+  
   const handleSendMessage = () => {
     if (message.trim() && selectedChat && socketRef.current) {
       const newMsg = {
@@ -145,8 +145,20 @@ const Messaging = () => {
     }
   };
 
+  const fetchMessages = async (connectionId, curUserId) => {
+    const participants = [connectionId, curUserId];
+    try {
+      const response = await axios.post(`${Base_URL}/messages`, {participants},{
+        withCredentials: true,
+      })
+      console.log("Messages fetched for connection:", connectionId, response.data);
+    } catch (err) {
+      console.error("Error fetching messages:", err);
+    }
+  };
   const handleSelectChat = (con) => {
     console.log("💬 Selected chat:", con._id, con.firstName);
+    fetchMessages(con._id, currentUserId);
     setSelectedChat(con);
     setShowSidebar(false);
   };

@@ -87,7 +87,7 @@ const SingUp = () => {
 
       const response = await axios.post(
         Base_URL + "/signup",
-        formData, // ✅ Send FormData, not regular object
+        formData, 
         {
           withCredentials: true,
           headers: {
