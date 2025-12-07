@@ -145,6 +145,7 @@ const Messaging = () => {
     }
   };
 
+  //fetch the inital mesage of selected user
   const fetchMessages = async (connectionId, curUserId) => {
     const participants = [connectionId, curUserId];
     try {
