@@ -120,7 +120,7 @@ const Messaging = () => {
         socketConnected: socketRef.current.connected,
       });
 
-      // Emit message using the stored socket reference
+      
       socketRef.current.emit("sendMessage", {
         currentUserId,
         targetUserId: selectedChat._id,
@@ -151,7 +151,7 @@ const Messaging = () => {
       const response = await axios.post(`${Base_URL}/messages`, {participants},{
         withCredentials: true,
       })
-      console.log("Messages fetched for connection:", connectionId, response.data);
+      
     } catch (err) {
       console.error("Error fetching messages:", err);
     }

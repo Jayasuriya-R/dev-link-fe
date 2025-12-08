@@ -54,7 +54,7 @@ const AiMentor = () => {
               },
               {
                 role: "user",
-                content: userMessage,
+                content: userMessage, 
               },
             ],
             temperature: 0.7,
