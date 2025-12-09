@@ -27,7 +27,7 @@ const Login = () => {
         }
       );
       navigate("/feed");
-      
+
       toast.success("Login successful!");
       dispatch(addCurrentUser(response.data.data));
       dispatch(setLoading(false));
@@ -40,14 +40,17 @@ const Login = () => {
   };
   return (
     <>
-      <div className="hero bg-base-200 flex flex-col justify-center w-full min-h-[100vh] ">
-        <BlurText
-          text="Welcome to DevLink⚡"
-          delay={150}
-          animateBy="words"
-          direction="top"
-          className="text-4xl text-center font-bold"
-        />
+      <div className="hero bg-base-200 flex flex-col justify-center items-center w-full min-h-[100vh] ">
+        <div className="">
+          <BlurText
+            text="Welcome to DevLink⚡"
+            delay={150}
+            animateBy="words"
+            direction="top"
+            className="lg:text-4xl text-2xl text-center font-bold "
+          />
+        </div>
+
 
         <div className="hero-content flex-col w-full lg:flex-row-reverse">
           <div className="card bg-base-100 md:w-3/12  max-w-xl shrink-0 shadow-2xl">

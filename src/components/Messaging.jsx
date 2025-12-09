@@ -38,6 +38,17 @@ const Messaging = () => {
   const currentUserId = currentUser?._id;
 
   useEffect(() => {
+    function handleClickOutside(e) {
+      // if popup is open AND click is outside → close
+      if (showEmojiPicker) {
+        setShowEmojiPicker(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showEmojiPicker])
+  useEffect(() => {
     setSelectedChat(targetChat);
   }, [targetChat]);
 
@@ -100,8 +111,8 @@ const Messaging = () => {
       socket.off("connect_error");
       socket.disconnect();
     };
-  }, [currentUserId]); 
-  
+  }, [currentUserId]);
+
   const handleSendMessage = () => {
     if (message.trim() && selectedChat && socketRef.current) {
       const newMsg = {
@@ -120,7 +131,7 @@ const Messaging = () => {
         socketConnected: socketRef.current.connected,
       });
 
-      
+
       socketRef.current.emit("sendMessage", {
         currentUserId,
         targetUserId: selectedChat._id,
@@ -149,10 +160,10 @@ const Messaging = () => {
   const fetchMessages = async (connectionId, curUserId) => {
     const participants = [connectionId, curUserId];
     try {
-      const response = await axios.post(`${Base_URL}/messages`, {participants},{
+      const response = await axios.post(`${Base_URL}/messages`, { participants }, {
         withCredentials: true,
       })
-      
+
     } catch (err) {
       console.error("Error fetching messages:", err);
     }
@@ -194,9 +205,8 @@ const Messaging = () => {
     <div className="flex h-[70vh] w-11/12 rounded-2xl bg-gray-50 overflow-hidden">
       {/* Sidebar - Responsive */}
       <div
-        className={`${
-          showSidebar ? "flex" : "hidden"
-        } md:flex w-full md:w-96 bg-white border-r border-gray-200 flex-col`}
+        className={`${showSidebar ? "flex" : "hidden"
+          } md:flex w-full md:w-96 bg-white border-r border-gray-200 flex-col`}
       >
         {/* User Profile Header */}
         <div className="p-4 border-b border-gray-200">
@@ -240,11 +250,10 @@ const Messaging = () => {
             <div
               key={con._id}
               onClick={() => handleSelectChat(con)}
-              className={`flex items-center gap-3 p-3 md:p-4 cursor-pointer transition-all hover:bg-gray-50 ${
-                selectedChat?._id === con._id
+              className={`flex items-center gap-3 p-3 md:p-4 cursor-pointer transition-all hover:bg-gray-50 ${selectedChat?._id === con._id
                   ? "bg-blue-50 border-l-4 border-blue-500"
                   : ""
-              }`}
+                }`}
             >
               <div className="relative flex-shrink-0">
                 <img
@@ -282,9 +291,8 @@ const Messaging = () => {
 
       {/* Chat Area - Responsive */}
       <div
-        className={`${
-          !showSidebar ? "flex" : "hidden"
-        } md:flex flex-1 flex-col`}
+        className={`${!showSidebar ? "flex" : "hidden"
+          } md:flex flex-1 flex-col`}
       >
         {selectedChat ? (
           <>
@@ -333,16 +341,14 @@ const Messaging = () => {
               {messages[selectedChat._id]?.map((msg, idx) => (
                 <div
                   key={idx}
-                  className={`flex flex-col ${
-                    msg.sender === "me" ? "items-end" : "items-start"
-                  }`}
+                  className={`flex flex-col ${msg.sender === "me" ? "items-end" : "items-start"
+                    }`}
                 >
                   <div
-                    className={`max-w-[85%] md:max-w-md px-3 md:px-4 py-2 rounded-2xl ${
-                      msg.sender === "me"
+                    className={`max-w-[85%] md:max-w-md px-3 md:px-4 py-2 rounded-2xl ${msg.sender === "me"
                         ? "bg-blue-500 text-white rounded-br-sm"
                         : "bg-white text-gray-900 rounded-bl-sm shadow-sm"
-                    }`}
+                      }`}
                   >
                     <p className="text-sm">{msg.text}</p>
                   </div>
@@ -354,18 +360,18 @@ const Messaging = () => {
 
               {(!messages[selectedChat._id] ||
                 messages[selectedChat._id].length === 0) && (
-                <div className="flex flex-col items-center justify-center h-full text-center px-4">
-                  <div className="w-16 h-16 md:w-20 md:h-20 bg-gray-200 rounded-full flex items-center justify-center mb-4">
-                    <Send className="w-8 h-8 md:w-10 md:h-10 text-gray-400" />
+                  <div className="flex flex-col items-center justify-center h-full text-center px-4">
+                    <div className="w-16 h-16 md:w-20 md:h-20 bg-gray-200 rounded-full flex items-center justify-center mb-4">
+                      <Send className="w-8 h-8 md:w-10 md:h-10 text-gray-400" />
+                    </div>
+                    <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-2">
+                      Start a conversation
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      Send a message to {selectedChat.firstName} to get started
+                    </p>
                   </div>
-                  <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-2">
-                    Start a conversation
-                  </h3>
-                  <p className="text-sm text-gray-500">
-                    Send a message to {selectedChat.firstName} to get started
-                  </p>
-                </div>
-              )}
+                )}
             </div>
 
             {/* Message Input */}
