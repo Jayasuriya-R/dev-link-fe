@@ -22,7 +22,7 @@ const Messaging = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedChat, setSelectedChat] = useState(null);
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState({});
+  const [messages, setMessages] = useState([]);
   const [showSidebar, setShowSidebar] = useState(true);
   const params = useParams();
   const dispatch = useDispatch();
@@ -92,14 +92,7 @@ const Messaging = () => {
       });
 
       // Add message to the correct chat using senderId
-      setMessages((prev) => {
-        const updated = {
-          ...prev,
-          [senderId]: [...(prev[senderId] || []), newMsg],
-        };
-        console.log("💾 Updated messages state for senderId:", senderId);
-        return updated;
-      });
+      setMessages((prev) => ([...prev, newMsg]));
     };
 
     socket.on("receiveMessage", handleReceiveMessage);
@@ -117,11 +110,8 @@ const Messaging = () => {
     if (message.trim() && selectedChat && socketRef.current) {
       const newMsg = {
         text: message,
-        time: new Date().toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-        sender: "me",
+        createdAt: new Date().toISOString(),
+        senderId: currentUserId,
       };
 
       console.log("📤 Sending message:", {
@@ -140,10 +130,7 @@ const Messaging = () => {
       });
 
       // Update local state immediately for instant feedback
-      setMessages((prev) => ({
-        ...prev,
-        [selectedChat._id]: [...(prev[selectedChat._id] || []), newMsg],
-      }));
+      setMessages((prev) => ([...prev, newMsg]));
 
       setMessage("");
     } else {
@@ -163,11 +150,14 @@ const Messaging = () => {
       const response = await axios.post(`${Base_URL}/messages`, { participants }, {
         withCredentials: true,
       })
+      console.log(response.data.data.messages)
+      setMessages(response.data.data.messages)
 
     } catch (err) {
       console.error("Error fetching messages:", err);
     }
   };
+
   const handleSelectChat = (con) => {
     console.log("💬 Selected chat:", con._id, con.firstName);
     fetchMessages(con._id, currentUserId);
@@ -251,8 +241,8 @@ const Messaging = () => {
               key={con._id}
               onClick={() => handleSelectChat(con)}
               className={`flex items-center gap-3 p-3 md:p-4 cursor-pointer transition-all hover:bg-gray-50 ${selectedChat?._id === con._id
-                  ? "bg-blue-50 border-l-4 border-blue-500"
-                  : ""
+                ? "bg-blue-50 border-l-4 border-blue-500"
+                : ""
                 }`}
             >
               <div className="relative flex-shrink-0">
@@ -267,15 +257,15 @@ const Messaging = () => {
                   <h2 className="font-semibold text-sm md:text-base text-gray-900 truncate">
                     {con?.firstName} {con?.lastName}
                   </h2>
-                  <span className="text-xs text-gray-500 ml-2">
+                  {/* <span className="text-xs text-gray-500 ml-2">
                     {messages[con._id]?.[messages[con._id].length - 1]?.time ||
                       ""}
-                  </span>
+                  </span> */}
                 </div>
-                <p className="text-xs md:text-sm text-gray-600 truncate">
+                {/* <p className="text-xs md:text-sm text-gray-600 truncate">
                   {messages[con._id]?.[messages[con._id].length - 1]?.text ||
                     "Start chatting..."}
-                </p>
+                </p> */}
               </div>
               {con.unread > 0 && (
                 <div className="flex-shrink-0 w-5 h-5 md:w-6 md:h-6 bg-blue-500 rounded-full flex items-center justify-center">
@@ -336,30 +326,37 @@ const Messaging = () => {
               </div>
             </div>
 
-            {/* Messages Area */}
+            {/* Messages Area */
+            console.log("state:",messages)}
             <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-3 md:space-y-4 bg-gray-50">
-              {messages[selectedChat._id]?.map((msg, idx) => (
+              {messages?.map((msg, idx) => (
                 <div
                   key={idx}
-                  className={`flex flex-col ${msg.sender === "me" ? "items-end" : "items-start"
+                  className={`flex flex-col ${msg.senderId === currentUserId
+                    ? "items-end" : "items-start"
                     }`}
                 >
                   <div
-                    className={`max-w-[85%] md:max-w-md px-3 md:px-4 py-2 rounded-2xl ${msg.sender === "me"
-                        ? "bg-blue-500 text-white rounded-br-sm"
-                        : "bg-white text-gray-900 rounded-bl-sm shadow-sm"
+                    className={`max-w-[85%] md:max-w-md px-3 md:px-4 py-2 rounded-2xl ${msg.senderId === currentUserId
+                      ? "bg-blue-500 text-white rounded-br-sm"
+                      : "bg-white text-gray-900 rounded-bl-sm shadow-sm"
                       }`}
                   >
                     <p className="text-sm">{msg.text}</p>
                   </div>
                   <span className="text-xs text-gray-500 mt-1 px-1">
-                    {msg.time}
+                    {
+                      new Date(msg.createdAt).toLocaleTimeString("en-IN", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })
+                    }
                   </span>
                 </div>
               ))}
 
-              {(!messages[selectedChat._id] ||
-                messages[selectedChat._id].length === 0) && (
+              {(
+                messages?.length === 0) && (
                   <div className="flex flex-col items-center justify-center h-full text-center px-4">
                     <div className="w-16 h-16 md:w-20 md:h-20 bg-gray-200 rounded-full flex items-center justify-center mb-4">
                       <Send className="w-8 h-8 md:w-10 md:h-10 text-gray-400" />

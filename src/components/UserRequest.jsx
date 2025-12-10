@@ -61,7 +61,7 @@ const UserRequest = ({ user }) => {
         <div className="modal-box bg-purple-100 relative">
           {/* Close button - at the top level of modal-box */}
           <button
-            className="btn btn-sm btn-circle absolute right-3 top-3 sm:right-4 sm:top-4 bg-base-300 text-white hover:bg-gray-600 border-none z-50"
+            className="btn btn-sm btn-circle absolute right-3 top-3 sm:right-4 sm:top-4 btn-neutral text-white hover:bg-gray-600 border-none z-50"
             onClick={() => document.getElementById(dialogId)?.close()}
           >
             ✕
@@ -79,7 +79,8 @@ const UserRequest = ({ user }) => {
                   return (
                     <button
                       key={skill}
-                      className="badge badge-outline border-secondary text-secondary bg-base-100/40 px-3 py-2 text-xs font-medium rounded-full hover:bg-secondary hover:text-white transition-all duration-200"
+                      className="badge badge-outline badge-secondary px-3 py-2 text-xs font-medium rounded-full"
+
                     >
                       {skill}
                     </button>
@@ -96,13 +97,13 @@ const UserRequest = ({ user }) => {
               className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3 w-full"
             >
               <button
-                className="btn bg-purple-600 text-white btn-sm hover:bg-purple-500 border-none w-full sm:w-auto"
+                className="btn bg-purple-600 text-white btn-sm hover:bg-purple-500 hover:rounded-xs border-none w-full sm:w-auto"
                 onClick={() => handleRequest("accepted")}
               >
                 Accept
-              </button>
+              </button> 
               <button
-                className="btn bg-base-300 text-white btn-sm hover:bg-gray-600 border-none w-full sm:w-auto"
+                className="btn bg-neutral text-white btn-sm hover:bg-gray-600 border-none w-full sm:w-auto"
                 onClick={() => handleRequest("rejected")}
               >
                 Deny
