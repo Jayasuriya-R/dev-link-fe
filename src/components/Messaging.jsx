@@ -27,6 +27,7 @@ const Messaging = () => {
   const params = useParams();
   const dispatch = useDispatch();
   const socketRef = useRef(null);
+  const bottomRef = useRef(null)
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const currentUser = useSelector((state) => state.auth.currentUser);
@@ -37,6 +38,9 @@ const Messaging = () => {
   const targetUserId = targetChat?._id;
   const currentUserId = currentUser?._id;
 
+  useEffect(()=>{
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  },[messages])
   useEffect(() => {
     function handleClickOutside(e) {
       // if popup is open AND click is outside → close
@@ -49,7 +53,11 @@ const Messaging = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showEmojiPicker])
   useEffect(() => {
-    setSelectedChat(targetChat);
+    if(params?.targetUserId){
+     handleSelectChat(targetChat)
+    }
+    
+    // setSelectedChat(targetChat);
   }, [targetChat]);
 
   useEffect(() => {
@@ -150,8 +158,12 @@ const Messaging = () => {
       const response = await axios.post(`${Base_URL}/messages`, { participants }, {
         withCredentials: true,
       })
-      console.log(response.data.data.messages)
-      setMessages(response.data.data.messages)
+      if(response.data.data?.messages){
+       setMessages(response.data.data?.messages)
+      }else{
+        setMessages([])
+      }
+      
 
     } catch (err) {
       console.error("Error fetching messages:", err);
@@ -369,6 +381,7 @@ const Messaging = () => {
                     </p>
                   </div>
                 )}
+                <div ref={bottomRef}></div>
             </div>
 
             {/* Message Input */}
