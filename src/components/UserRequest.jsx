@@ -22,7 +22,7 @@ const UserRequest = ({ user }) => {
         {},
         { withCredentials: true }
       );
-      console.log("Request reviewed:", response.data);
+      // console.log("Request reviewed:", response.data);
       dispatch(setLoading(false));
       dispatch(updateRequest(user._id));
       if (status === "accepted") {

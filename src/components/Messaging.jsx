@@ -61,7 +61,7 @@ const Messaging = () => {
   }, [targetChat]);
 
   useEffect(() => {
-    console.log("length", connection.length);
+    // console.log("length", connection.length);
     if (connection.length === 0) {
       fetchConnections();
     }
@@ -69,21 +69,21 @@ const Messaging = () => {
 
   useEffect(() => {
     if (!currentUserId) {
-      console.log("❌ No currentUserId, skipping socket connection");
+      // console.log("❌ No currentUserId, skipping socket connection");
       return;
     }
 
-    console.log("🔌 Creating socket connection for user:", currentUserId);
+    // console.log("🔌 Creating socket connection for user:", currentUserId);
     const socket = createSocketConnection();
     socketRef.current = socket;
 
     // Listen for connection events
     socket.on("connect", () => {
-      console.log("✅ Socket connected with ID:", socket.id);
+      // console.log("✅ Socket connected with ID:", socket.id);
 
       // Register user with their ID
       socket.emit("register", { userId: currentUserId });
-      console.log("📝 Registered user:", currentUserId);
+      // console.log("📝 Registered user:", currentUserId);
     });
 
     socket.on("connect_error", (error) => {
@@ -92,12 +92,7 @@ const Messaging = () => {
 
     // Handle incoming messages
     const handleReceiveMessage = ({ newMsg, senderId, firstName }) => {
-      console.log("📩 Received message:", {
-        text: newMsg.text,
-        from: firstName,
-        senderId: senderId,
-        timestamp: new Date().toISOString(),
-      });
+     
 
       // Add message to the correct chat using senderId
       setMessages((prev) => ([...prev, newMsg]));
@@ -106,7 +101,7 @@ const Messaging = () => {
     socket.on("receiveMessage", handleReceiveMessage);
 
     return () => {
-      console.log("🔌 Cleaning up socket connection");
+      
       socket.off("receiveMessage", handleReceiveMessage);
       socket.off("connect");
       socket.off("connect_error");
@@ -122,12 +117,7 @@ const Messaging = () => {
         senderId: currentUserId,
       };
 
-      console.log("📤 Sending message:", {
-        from: currentUserId,
-        to: selectedChat._id,
-        text: newMsg.text,
-        socketConnected: socketRef.current.connected,
-      });
+      
 
 
       socketRef.current.emit("sendMessage", {
@@ -171,7 +161,7 @@ const Messaging = () => {
   };
 
   const handleSelectChat = (con) => {
-    console.log("💬 Selected chat:", con._id, con.firstName);
+    
     fetchMessages(con._id, currentUserId);
     setSelectedChat(con);
     setShowSidebar(false);
@@ -188,7 +178,7 @@ const Messaging = () => {
       const response = await axios.get(Base_URL + "/user/connection", {
         withCredentials: true,
       });
-      console.log("Connections fetched:", response.data);
+      
       dispatch(setConnections(response.data.data));
       dispatch(setLoading(false));
     } catch (err) {
@@ -338,8 +328,7 @@ const Messaging = () => {
               </div>
             </div>
 
-            {/* Messages Area */
-            console.log("state:",messages)}
+            
             <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-3 md:space-y-4 bg-gray-50">
               {messages?.map((msg, idx) => (
                 <div

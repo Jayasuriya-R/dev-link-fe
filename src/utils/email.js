@@ -20,6 +20,6 @@ export const sendEmail = async (email, subject, message) => {
     message: htmlMessage,
   });
 
-  console.log("Email sent:", response);
+  // console.log("Email sent:", response);
 };
 

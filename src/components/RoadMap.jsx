@@ -28,7 +28,7 @@ const PhaseCard = ({ phase, index, isEven }) => {
           {/* Card */}
           <div 
             onClick={() => setIsOpen(true)}
-            className="card bg-base-200 shadow-md hover:shadow-lg transition-all cursor-pointer hover:scale-[1.02]"
+            className="card bg-base-200 shadow-md hover:shadow-lg text-center transition-all cursor-pointer hover:scale-[1.02]"
           >
             <div className="card-body p-4">
               <div className="flex items-center gap-2">

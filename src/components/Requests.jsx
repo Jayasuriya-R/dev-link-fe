@@ -15,7 +15,7 @@ const Connections = () => {
 
   const dispatch = useDispatch();
   const requests = useSelector((state) => state.requests);
-  console.log("Connections from store:", requests);
+  
 
   const fetchRequests = async () => {
     dispatch(setLoading(true));
@@ -23,7 +23,7 @@ const Connections = () => {
       const response = await axios.get(Base_URL + "/user/requests/received", {
         withCredentials: true,
       });
-      console.log("Connections fetched:", response.data);
+     
       dispatch(setRequests(response.data.data));
       dispatch(setLoading(false));
     } catch (err) {

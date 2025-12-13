@@ -16,7 +16,7 @@ const UserCard = ({ feedData, setMoveFeed }) => {
         {},
         { withCredentials: true }
       );
-      console.log("Profile liked:", response.data);
+      // console.log("Profile liked:", response.data);
       setPopupMessage("You liked this profile!");
       setTimeout(() => {
         setPopupMessage(null);
@@ -39,7 +39,7 @@ const UserCard = ({ feedData, setMoveFeed }) => {
         {},
         { withCredentials: true }
       );
-      console.log("Profile liked:", response.data);
+      // console.log("Profile liked:", response.data);
       setPopupMessage("You rejected this profile!");
       setTimeout(() => {
         setPopupMessage(null);

@@ -96,14 +96,14 @@ const SingUp = () => {
         }
       );
 
-      console.log("SignUp successful:", response.data);
+     
       toast.success("SignUp successful!");
       navigate("/feed");
       dispatch(loginUser());
       sendEmail(emailId, "Welcome to DevLink⚡",  welcomeEmail(firstName));
       dispatch(setLoading(false))
     } catch (err) {
-      console.log("SignUp error:", err);
+     
       toast.error("SignUp failed. Please try again.");
       dispatch(setLoading(false))
     }

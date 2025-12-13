@@ -22,7 +22,7 @@ const Navbar = () => {
         {},
         { withCredentials: true }
       );
-      console.log("Logout successful:", response.data);
+      
       dispatch(addCurrentUser(null));
       dispatch(removeFeed([]));
       navigate("/login");

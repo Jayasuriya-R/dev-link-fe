@@ -82,12 +82,12 @@ const TechNews = () => {
 
         // ✅ If cached news exists AND it's less than 24 hrs old → use cache
         if (cachedArticles && lastFetched && now - parseInt(lastFetched) < oneDay) {
-          console.log("📌 Using cached news (last fetched:", new Date(parseInt(lastFetched)).toLocaleString() + ")");
+          // console.log("📌 Using cached news (last fetched:", new Date(parseInt(lastFetched)).toLocaleString() + ")");
           setArticles(JSON.parse(cachedArticles));
           return;
         }
 
-        console.log("🌐 Fetching fresh news...");
+        // console.log("🌐 Fetching fresh news...");
         setIsLoading(true);
         setError(null);
         
