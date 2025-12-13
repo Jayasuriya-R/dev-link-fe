@@ -1,5 +1,6 @@
-export const Base_URL = "http://localhost:3000";
-// "https://devlink-backend-r8m9.onrender.com"
+export const Base_URL = "https://devlink-backend-r8m9.onrender.com";
+
+// "http://localhost:3000";
 export const systemPrompt = `You are DevBot, the AI assistant for "DevLink" — a professional networking platform designed specifically for developers to connect, collaborate, and innovate together.
 
 ## About DevLink
