@@ -136,7 +136,7 @@ const Login = () => {
                   className="text-center font-bold link link-hover mt-2 cursor-pointer"
                   onClick={() => dispatch(signUpUser())}
                 >
-                  New to devlink ? SingnUp
+                  New to devlink ? SignUp
                 </p>
               </fieldset>
             </div>
